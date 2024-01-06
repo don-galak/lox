@@ -13,7 +13,7 @@ class Scanner {
     private int start = 0;
     private int current = 0;
     private int line = 1;
-    
+
     Scanner(String source) {
         this.source = source;
     }
@@ -30,17 +30,37 @@ class Scanner {
 
     private void scanToken() {
         char c = advance();
-        switch(c) {
-            case '(': addToken(LEFT_PAREN); break;
-            case ')': addToken(RIGHT_PAREN); break;
-            case '{': addToken(LEFT_BRACE); break;
-            case '}': addToken(RIGHT_BRACE); break;
-            case ',': addToken(COMMA); break;
-            case '.': addToken(DOT); break;
-            case '-': addToken(MINUS); break;
-            case '+': addToken(PLUS); break;
-            case ';': addToken(SEMICOLON); break;
-            case '*': addToken(STAR); break;
+        switch (c) {
+            case '(':
+                addToken(LEFT_PAREN);
+                break;
+            case ')':
+                addToken(RIGHT_PAREN);
+                break;
+            case '{':
+                addToken(LEFT_BRACE);
+                break;
+            case '}':
+                addToken(RIGHT_BRACE);
+                break;
+            case ',':
+                addToken(COMMA);
+                break;
+            case '.':
+                addToken(DOT);
+                break;
+            case '-':
+                addToken(MINUS);
+                break;
+            case '+':
+                addToken(PLUS);
+                break;
+            case ';':
+                addToken(SEMICOLON);
+                break;
+            case '*':
+                addToken(STAR);
+                break;
             case '!':
                 addToken(match('=') ? BANG_EQUAL : BANG);
                 break;
@@ -55,7 +75,8 @@ class Scanner {
                 break;
             case '/':
                 if (match('/')) {
-                    while (peek() != '\n' && !isAtEnd()) advance();
+                    while (peek() != '\n' && !isAtEnd())
+                        advance();
                 } else {
                     addToken(SLASH);
                 }
@@ -67,7 +88,9 @@ class Scanner {
             case '\n':
                 line++;
                 break;
-            case '"': string(); break;
+            case '"':
+                string();
+                break;
 
             default:
                 Lox.error(line, "Unexpected character");
@@ -77,7 +100,8 @@ class Scanner {
 
     private void string() {
         while (peek() != '"' && !isAtEnd()) {
-            if (peek() == '\n') line++;
+            if (peek() == '\n')
+                line++;
             advance();
         }
 
@@ -95,15 +119,18 @@ class Scanner {
     }
 
     private boolean match(char expected) {
-        if (isAtEnd()) return false;
+        if (isAtEnd())
+            return false;
 
-        if (source.charAt(current) != expected) return false;
+        if (source.charAt(current) != expected)
+            return false;
         current++;
         return true;
     }
 
     private char peek() {
-        if (isAtEnd()) return '\0';
+        if (isAtEnd())
+            return '\0';
         return source.charAt(current);
     }
 
