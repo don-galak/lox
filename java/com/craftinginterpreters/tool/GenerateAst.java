@@ -42,14 +42,14 @@ public class GenerateAst {
 
         // The base accept() method.
         writer.println();
-        writer.println("   abstract <R> R accept(Visitor<R> visitor);");
+        writer.println("  abstract <R> R accept(Visitor<R> visitor);");
 
         writer.println("}");
         writer.close();
     }
 
     private static void defineVisitor(PrintWriter writer, String baseName, List<String> types) {
-        writer.println("   interface Visitor<R> {}");
+        writer.println("  interface Visitor<R> {");
 
         for (String type : types) {
             String typeName = type.split(":")[0].trim();
