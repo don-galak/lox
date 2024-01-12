@@ -1,0 +1,65 @@
+#! /bin/bash
+
+arg1=$1;
+
+function main() {
+    if [ -z "$1" ]
+        then
+        echo "Usage: generateAst <output directory>"
+        return 1
+    fi
+
+    allTypes=(
+        "Binary   : Expr left, Token operator, Expr right"
+        "Grouping : Expr expression"
+        "Literal  : Object value"
+        "Unary    : Token operator, Expr right"
+    )
+
+    defineAst $1 "Expr" "${allTypes[@]}"
+}
+
+function defineAst() {
+    local outputDir=$1
+    local baseName=$2
+    local path="$outputDir/$baseName.java"
+
+    shift
+    local types=("$@")
+    local fileName=$baseName.java
+
+    echo "the path is: $path"
+
+    echo "package com.craftinginterpreters.lox;" > $fileName
+    echo "" >> $fileName
+    echo "import java.util.List;" >> $fileName
+    echo "" >> $fileName
+    echo "abstract class $baseName {" >> $fileName
+
+    defineVisitor $baseName "${types[@]}"
+
+    # for t in ${types[@]}; do
+    #     echo $t
+    # done
+}
+
+function defineVisitor() {
+    echo "  interface Visitor<R> {" >> $1.java
+
+    # TODO 
+    # for (String type : types) {
+    #     String typeName = type.split(":")[0].trim();
+    #     writer.println("    R visit" + typeName + baseName + "(" + typeName + " " + baseName.toLowerCase() + ");");
+    # }
+
+    # for t in ${types[@]}; do
+    #     echo $t
+    # done
+
+}
+
+function defineType() {
+    
+}
+
+main $arg1 
