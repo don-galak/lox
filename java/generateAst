@@ -1,5 +1,9 @@
 #! /bin/bash
 
+function write() {
+    echo "$1" >> $fileName
+}
+
 arg1=$1;
 
 function main() {
@@ -31,19 +35,20 @@ function defineAst() {
     echo "the path is: $path"
 
     echo "package com.craftinginterpreters.lox;" > $fileName
-    echo "" >> $fileName
-    echo "import java.util.List;" >> $fileName
-    echo "" >> $fileName
-    echo "abstract class $baseName {" >> $fileName
+    write ""
+    write "import java.util.List;"
+    write ""
+    write "abstract class $baseName {"
 
-    defineVisitor $fileName $baseName "${types[@]}"
+    defineVisitor $baseName "${types[@]}"
 
     # The AST classes.
     for type in "${types[@]}"; do
         className=$(echo "$type" | cut -d':' -f1 | tr -d '[:space:]')
+
+        # TODO This needs fixing.
         fields=$(echo "$type" | cut -d':' -f2 | tr -d '[:space:]')
-        # echo "Class Name: $className"
-        # echo "Fields: $fields"
+        defineType $baseName $className $fields
     done
 
     # The base accept() method.
@@ -53,25 +58,35 @@ function defineAst() {
 }
 
 function defineVisitor() {
-    local fileName=$1
-    local baseName=$2
+    local baseName=$1
 
-    shift
     shift
     shift
 
     local types=("$@")
 
-    echo "  interface Visitor<R> {" >> $fileName
+    write "  interface Visitor<R> {"
 
     for type in "${types[@]}"; do
         typeName=$(echo "$type" | cut -d':' -f1 | tr -d '[:space:]')
         baseNameLower=$(echo "$baseName" | tr '[:upper:]' '[:lower:]')
     
-        echo "    R visit${typeName}${baseName}(${typeName} ${baseNameLower});" >> $fileName 
+        write "    R visit${typeName}${baseName}(${typeName} ${baseNameLower});"
     done
     
-    echo "  }" >> $fileName
+    write "  }"
 }
+
+function defineType() {
+    basName=$1
+    className=$2
+    fieldList=$3
+
+    write "  static class $className extends $baseName {"
+
+    # Constructor
+    write "    $className($fieldList) {"
+}
+
 
 main $arg1 
