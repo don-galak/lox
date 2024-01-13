@@ -36,30 +36,42 @@ function defineAst() {
     echo "" >> $fileName
     echo "abstract class $baseName {" >> $fileName
 
-    defineVisitor $baseName "${types[@]}"
+    defineVisitor $fileName $baseName "${types[@]}"
 
-    # for t in ${types[@]}; do
-    #     echo $t
-    # done
+    # The AST classes.
+    for type in "${types[@]}"; do
+        className=$(echo "$type" | cut -d':' -f1 | tr -d '[:space:]')
+        fields=$(echo "$type" | cut -d':' -f2 | tr -d '[:space:]')
+        # echo "Class Name: $className"
+        # echo "Fields: $fields"
+    done
+
+    # The base accept() method.
+    # echo "" >> $fileName
+    # echo "  abstract <R> R accept(Visitor<R> visitor);" >> $fileName
+    # echo "}" >> $fileName
 }
 
 function defineVisitor() {
-    echo "  interface Visitor<R> {" >> $1.java
+    local fileName=$1
+    local baseName=$2
 
-    # TODO 
-    # for (String type : types) {
-    #     String typeName = type.split(":")[0].trim();
-    #     writer.println("    R visit" + typeName + baseName + "(" + typeName + " " + baseName.toLowerCase() + ");");
-    # }
+    shift
+    shift
+    shift
 
-    # for t in ${types[@]}; do
-    #     echo $t
-    # done
+    local types=("$@")
 
-}
+    echo "  interface Visitor<R> {" >> $fileName
 
-function defineType() {
+    for type in "${types[@]}"; do
+        typeName=$(echo "$type" | cut -d':' -f1 | tr -d '[:space:]')
+        baseNameLower=$(echo "$baseName" | tr '[:upper:]' '[:lower:]')
     
+        echo "    R visit${typeName}${baseName}(${typeName} ${baseNameLower});" >> $fileName 
+    done
+    
+    echo "  }" >> $fileName
 }
 
 main $arg1 
