@@ -52,9 +52,10 @@ function defineAst() {
     done
 
     # The base accept() method.
-    # echo "" >> $fileName
-    # echo "  abstract <R> R accept(Visitor<R> visitor);" >> $fileName
-    # echo "}" >> $fileName
+    write ""
+    write "  abstract <R> R accept(Visitor<R> visitor);"
+    write "}"
+    write ""
 }
 
 function defineVisitor() {
@@ -76,14 +77,39 @@ function defineVisitor() {
 }
 
 function defineType() {
-    basName=$1
-    className=$2
-    fieldList=$3
+    local basName=$1
+    local className=$2
+    local fieldList=$3
 
     write "  static class $className extends $baseName {"
 
-    # Constructor
+    # Constructor.
     write "    $className($fieldList) {"
+
+    # Store parameters in fields.
+    # TODO this creates a list of variable names only, while we need a list of "ClassName variableName"
+    fields=($(awk -F ', ' '{for (i=1; i<=NF; i++) {split($i, a, " "); if (a[2]) print a[2]}}' <<< "$fieldList"))
+
+    for field in "${fields[@]}"; do
+        write "      this.$field = $field;"
+    done
+
+    write "    }"
+
+    #  Visitor pattern
+    write ""
+    write "    @Override"
+    write "    <R> R accept(Visitor<R> visitor) {"
+    write "      return visitor.visit$className$basName(this);"
+    write "    }"
+
+    # Fields.
+    write ""
+    for field in "${fields[@]}"; do
+        write "    final $field;"
+    done
+
+    write "  }"
 }
 
 
