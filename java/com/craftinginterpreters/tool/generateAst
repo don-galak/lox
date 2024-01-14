@@ -34,6 +34,7 @@ function defineAst() {
     local fileName=$baseName.java
 
     echo "the path is: $path"
+    echo "$PWD"
 
     echo "package com.craftinginterpreters.lox;" > $fileName
     write ""
