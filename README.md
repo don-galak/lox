@@ -8,7 +8,7 @@ Build: `cd java && javac com/craftinginterpreters/lox/Lox.java`
 
 Run repl: `java com/craftinginterpreters/lox/Lox`
 
-or type: `cd java && ./run`
+or, to do both, type: `cd java && ./run`
 
 Exit the repl by `Ctrl + d`
 
@@ -18,8 +18,8 @@ Run tool: `cd java && java com/craftinginterpreters/tool/GenerateAst com/craftin
 
 or type:
 
-* `cd java && ./generate java` for the `java` script
-* `cd java && ./generate bash` for the `bash` script
+* `cd java && ./generate java` for the `java` version
+* `cd java && ./generate bash` for the `bash` version
 
 also check [Just enough Java for Crafting Interpreters](https://jesse.sh/just-enough-java-for-crafting-interpreters/)
 
