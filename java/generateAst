@@ -55,7 +55,6 @@ function defineAst() {
     write ""
     write "  abstract <R> R accept(Visitor<R> visitor);"
     write "}"
-    write ""
 }
 
 function defineVisitor() {
@@ -87,11 +86,13 @@ function defineType() {
     write "    $className($fieldList) {"
 
     # Store parameters in fields.
-    # TODO this creates a list of variable names only, while we need a list of "ClassName variableName"
-    fields=($(awk -F ', ' '{for (i=1; i<=NF; i++) {split($i, a, " "); if (a[2]) print a[2]}}' <<< "$fieldList"))
+    OLDIFS=$IFS
+    IFS=', ' read -ra fields <<< "$fieldList"
+    IFS=$OLDIFS
 
-    for field in "${fields[@]}"; do
-        write "      this.$field = $field;"
+    for ((i = 0; i < ${#fields[@]}; i += 2)); do
+        name="${fields[i + 1]}"
+        write "      this.$name = $name;"
     done
 
     write "    }"
@@ -105,8 +106,9 @@ function defineType() {
 
     # Fields.
     write ""
-    for field in "${fields[@]}"; do
-        write "    final $field;"
+    for ((i = 0; i < ${#fields[@]}; i += 2)); do
+        name="${fields[i]} ${fields[i + 1]}"
+        write "    final $name;"
     done
 
     write "  }"
