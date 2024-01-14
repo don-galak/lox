@@ -29,6 +29,7 @@ function defineAst() {
     local path="$outputDir/$baseName.java"
 
     shift
+    shift
     local types=("$@")
     local fileName=$baseName.java
 
@@ -45,10 +46,9 @@ function defineAst() {
     # The AST classes.
     for type in "${types[@]}"; do
         className=$(echo "$type" | cut -d':' -f1 | tr -d '[:space:]')
-
-        # TODO This needs fixing.
-        fields=$(echo "$type" | cut -d':' -f2 | tr -d '[:space:]')
-        defineType $baseName $className $fields
+        fields=$(echo "$type" | cut -d':' -f2 | xargs)
+        
+        defineType $baseName $className "$fields"
     done
 
     # The base accept() method.
@@ -61,8 +61,6 @@ function defineVisitor() {
     local baseName=$1
 
     shift
-    shift
-
     local types=("$@")
 
     write "  interface Visitor<R> {"
