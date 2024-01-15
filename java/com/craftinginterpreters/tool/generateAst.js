@@ -1,18 +1,5 @@
 const { writeFileSync } = require("fs");
 
-const printWriter = (path) => {
-  let fileCreated = false;
-
-  return function write(data) {
-    if (!fileCreated) {
-      writeFileSync(path, data);
-      fileCreated = true;
-      return;
-    }
-    writeFileSync(path, `\n${data || ""}`, { flag: "a" });
-  };
-};
-
 const types = [
   "Binary   :  Expr left, Token operator, Expr right",
   "Grouping : Expr expression",
@@ -30,9 +17,9 @@ defineAst(outputDir, "Expr", types);
 
 function defineAst(outputDir, baseName, types) {
   const path = outputDir + "/" + baseName + ".java";
-  const write = printWriter(path);
+  const write = (data) => writeFileSync(path, `\n${data || ""}`, { flag: "a" });
 
-  write("package com.craftinginterpreters.lox;");
+  writeFileSync(path, "package com.craftinginterpreters.lox;");
   write();
   write("import java.util.List;");
   write();
