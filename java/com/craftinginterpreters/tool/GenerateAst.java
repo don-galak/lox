@@ -43,7 +43,6 @@ public class GenerateAst {
         // The base accept() method.
         writer.println();
         writer.println("  abstract <R> R accept(Visitor<R> visitor);");
-
         writer.println("}");
         writer.close();
     }

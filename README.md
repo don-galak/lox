@@ -20,6 +20,7 @@ or type:
 
 * `cd java && ./generate java` for the `java` version
 * `cd java && ./generate bash` for the `bash` version
+* `cd java && ./generate js` for the `javascript` version
 
 also check [Just enough Java for Crafting Interpreters](https://jesse.sh/just-enough-java-for-crafting-interpreters/)
 
