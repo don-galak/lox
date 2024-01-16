@@ -20,15 +20,31 @@ class Interpreter implements Expr.Visitor<Object> {
             case BANG:
                 return !isTruthy(right);
             case MINUS:
-                return -(double)right;
+                checkNumberOperand(expr.operator, right);
+                return -(double) right;
         }
 
         return null;
     }
 
+    private void checkNumberOperand(Token operator, Object operand) {
+        if (operand instanceof Double)
+            return;
+        throw new RuntimeError(operator, "Operand must be a number");
+    }
+
+    private void checkNumberOperands(Token operator, Object left, Object right) {
+        if (left instanceof Double && right instanceof Double)
+            return;
+
+        throw new RuntimeError(operator, "Operands must be numbers");
+    }
+
     private boolean isTruthy(Object object) {
-        if (object == null) return false;
-        if (object instanceof Boolean) return (boolean)object;
+        if (object == null)
+            return false;
+        if (object instanceof Boolean)
+            return (boolean) object;
         return true;
     }
 
@@ -43,39 +59,49 @@ class Interpreter implements Expr.Visitor<Object> {
 
         switch (expr.operator.type) {
             case GREATER:
-                return (double)left > (double)right;
+                checkNumberOperands(expr.operator, left, right);
+                return (double) left > (double) right;
             case GREATER_EQUAL:
-                return (double)left >= (double)right;
+                checkNumberOperands(expr.operator, left, right);
+                return (double) left >= (double) right;
             case LESS:
-                return (double)left < (double)right;
+                checkNumberOperands(expr.operator, left, right);
+                return (double) left < (double) right;
             case LESS_EQUAL:
-                return (double)left <= (double)right;
-            case BANG_EQUAL: return !isEqual(left, right);
-            case EQUAL_EQUAL: return isEqual(left, right);
+                checkNumberOperands(expr.operator, left, right);
+                return (double) left <= (double) right;
+            case BANG_EQUAL:
+                return !isEqual(left, right);
+            case EQUAL_EQUAL:
+                return isEqual(left, right);
             case MINUS:
-                return (double)left - (double)right;
+                checkNumberOperands(expr.operator, left, right);
+                return (double) left - (double) right;
             case PLUS:
                 if (left instanceof Double && right instanceof Double) {
-                    return (double)left + (double)right;
+                    return (double) left + (double) right;
                 }
-
                 if (left instanceof String && right instanceof String) {
-                    return (String)left + (String)right;
+                    return (String) left + (String) right;
                 }
 
-                break;
+                throw new RuntimeError(expr.operator, "Operands must be two numbers or two strings");
             case SLASH:
-                return (double)left / (double)right;
+                checkNumberOperands(expr.operator, left, right);
+                return (double) left / (double) right;
             case STAR:
-                return (double)left * (double)right;
+                checkNumberOperands(expr.operator, left, right);
+                return (double) left * (double) right;
         }
 
         return null;
     }
 
     private boolean isEqual(Object a, Object b) {
-        if (a == null && b == null) return true;
-        if (a == null) return false;
+        if (a == null && b == null)
+            return true;
+        if (a == null)
+            return false;
 
         return a.equals(b);
     }
