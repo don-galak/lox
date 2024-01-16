@@ -8,13 +8,17 @@ case $lang in
     ./com/craftinginterpreters/tool/generateAst com/craftinginterpreters/lox
     ;;
 
+  java)
+    javac com/craftinginterpreters/tool/GenerateAst.java
+    java com/craftinginterpreters/tool/GenerateAst com/craftinginterpreters/lox
+    ;;
+
   js)
     node ./com/craftinginterpreters/tool/generateAst.js com/craftinginterpreters/lox
     ;;
 
-  java)
-    javac com/craftinginterpreters/tool/GenerateAst.java
-    java com/craftinginterpreters/tool/GenerateAst com/craftinginterpreters/lox
+  py)
+    python3 ./com/craftinginterpreters/tool/generateAst.py com/craftinginterpreters/lox
     ;;
 
   *)
