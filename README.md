@@ -31,9 +31,8 @@ also check [Just enough Java for Crafting Interpreters](https://jesse.sh/just-en
 * How do you initialize a constructor in a class?
 * How do you pass command line arguments in java and which method must be used, to do so?
 * What does the `@IntrinsicCandidate` annotation do?
-* Let's say you have an `enum` in a package. How can you use the enum values directly without having to write: `Enum.`?
-
-A - By typing: `Enum.*`. This is the static import and saves you from having to type `Enum.Value`
+* Let's say you have an `enum` in a package. How can you use the enum values directly without having to write: `Enum.`?<br /> - Answer - By typing: `Enum.*`. This is the static import and saves you from having to type `Enum.Value`
+* Java is a statically typed language. Which means that that type errors are detected and reported at compile time. Is there any case where Java does runtime type checks?<br /> - Answer - Yes. Type casting. The only reason the static checker can presume that casts always succeed without violating the language's soundness guarantees, is because the cast is checked at runtime and throws an exception on failure.
 
 ##### Notes
 
