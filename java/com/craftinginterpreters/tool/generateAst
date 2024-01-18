@@ -13,14 +13,14 @@ function main() {
         return 1
     fi
 
-    allTypes=(
+    expressions=(
         "Binary   : Expr left, Token operator, Expr right"
         "Grouping : Expr expression"
         "Literal  : Object value"
         "Unary    : Token operator, Expr right"
     )
 
-    defineAst $1 "Expr" "${allTypes[@]}"
+    defineAst $1 "Expr" "${expressions[@]}"
 }
 
 function defineAst() {
@@ -31,9 +31,6 @@ function defineAst() {
     shift
     shift
     local types=("$@")
-
-    echo "the path is: $fileName"
-    echo "$PWD"
 
     echo "package com.craftinginterpreters.lox;" > $fileName
     write ""

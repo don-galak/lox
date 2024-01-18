@@ -1,19 +1,21 @@
 const { writeFileSync } = require("fs");
 
-const types = [
-  "Binary   :  Expr left, Token operator, Expr right",
-  "Grouping : Expr expression",
-  "Literal  : Object value",
-  "Unary    : Token operator, Expr right",
-];
-
 if (!process.argv[2]) {
   console.error("Usage: generate_ast <output directory>");
   process.exit(1);
 }
 
 const outputDir = process.argv[2];
-defineAst(outputDir, "Expr", types);
+defineAst(outputDir, "Expr", [
+  "Binary   :  Expr left, Token operator, Expr right",
+  "Grouping : Expr expression",
+  "Literal  : Object value",
+  "Unary    : Token operator, Expr right",
+]);
+defineAst(outputDir, "Stmt", [
+  "Expression : Expr expression",
+  "Print      : Expr expression"
+])
 
 function defineAst(outputDir, baseName, types) {
   const path = outputDir + "/" + baseName + ".java";
