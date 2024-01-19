@@ -1,9 +1,5 @@
 #! /bin/bash
 
-function write() {
-    echo "$1" >> $fileName
-}
-
 arg1=$1;
 
 function main() {
@@ -19,33 +15,39 @@ function main() {
         "Literal  : Object value"
         "Unary    : Token operator, Expr right"
     )
+    statements=(
+        "Expression : Expr expression"
+        "Print      : Expr expression"
+    )
 
     defineAst $1 "Expr" "${expressions[@]}"
+    defineAst $1 "Stmt" "${statements[@]}"
 }
 
 function defineAst() {
     local outputDir=$1
     local baseName=$2
-    local fileName="$outputDir/$baseName.java"
+    local types=("${@:3}")
+    local path="$outputDir/$baseName.java"
+    local write
+    write() {
+        echo -e "${1:-}" >> "${path}"
+    }
 
-    shift
-    shift
-    local types=("$@")
-
-    echo "package com.craftinginterpreters.lox;" > $fileName
-    write ""
+    echo "package com.craftinginterpreters.lox;" > $path
+    write
     write "import java.util.List;"
-    write ""
+    write
     write "abstract class $baseName {"
 
-    defineVisitor $baseName "${types[@]}"
+    defineVisitor "$write" $baseName "${types[@]}"
 
     # The AST classes.
     for type in "${types[@]}"; do
         className=$(echo "$type" | cut -d':' -f1 | tr -d '[:space:]')
         fields=$(echo "$type" | cut -d':' -f2 | xargs)
         
-        defineType $baseName $className "$fields"
+        defineType "$write" $baseName $className "$fields"
     done
 
     # The base accept() method.
@@ -55,10 +57,10 @@ function defineAst() {
 }
 
 function defineVisitor() {
-    local baseName=$1
+    local write=$1
+    local baseName=$2
 
-    shift
-    local types=("$@")
+    local types=("${@:3}")
 
     write "  interface Visitor<R> {"
 
@@ -73,9 +75,10 @@ function defineVisitor() {
 }
 
 function defineType() {
-    local basName=$1
-    local className=$2
-    local fieldList=$3
+    local write=$1
+    local basName=$2
+    local className=$3
+    local fieldList=$4
 
     write "  static class $className extends $baseName {"
 
