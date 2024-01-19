@@ -21,6 +21,10 @@ case $lang in
     python3 ./com/craftinginterpreters/tool/generateAst.py com/craftinginterpreters/lox
     ;;
 
+  go)
+    go run ./com/craftinginterpreters/tool/generateAst.go com/craftinginterpreters/lox
+    ;;
+
   *)
     echo "invalid input"
     ;;
