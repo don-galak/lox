@@ -6,15 +6,39 @@ except:
     print("Usage: generate_ast <output directory>", sys.argv)
     exit(1)
 
-types = [
-  "Binary   :  Expr left, Token operator, Expr right",
-  "Grouping : Expr expression",
-  "Literal  : Object value",
-  "Unary    : Token operator, Expr right",
-]
-
 def defineVisitor(file, baseName, types):
-    file.write("  interface Visitor<R> {")
+    file.write("  interface Visitor<R> {\n")
+
+    for type in types:
+        typeName = type.split(":")[0].strip()
+        file.write("    R visit" + typeName + baseName + "(" + typeName + " " + baseName.lower() + ");\n")
+
+    file.write("  }\n")
+
+def defineType(file, baseName, className, fieldList):
+    file.write("  static class " + className + " extends " + baseName + " {\n")
+
+    # Constructor
+    file.write("    " + className + "(" + fieldList + ")" + " {\n")
+
+    # Store parameters in fields.
+    fields = fieldList.split(", ")
+    for field in fields:
+        name = field.split(" ")[1]
+        file.write("      this." + name + " = " + name + ";\n")
+    
+    file.write("    }\n\n")
+
+    # Visitor pattern
+    file.write("    @Override\n")    
+    file.write("    <R> R accept(Visitor<R> visitor) {\n")
+    file.write("      return visitor.visit" + className + baseName + "(this);\n")
+    file.write("    }\n\n")
+
+    # Fields
+    for field in fields:
+        file.write("    final " + field + ";\n")
+    file.write("  }\n")
 
 def defineAst(outputDir, baseName, types):
     path = outputDir + "/" + baseName + ".java"
@@ -27,13 +51,26 @@ def defineAst(outputDir, baseName, types):
     defineVisitor(file, baseName, types)
 
     # The AST classes.
+    for type in types:
+        className = type.split(":")[0].strip()
+        fields = type.split(":")[1].strip()
+        defineType(file, baseName, className, fields)
 
     # The base accept() method.
     file.write("\n")
     file.write("  abstract <R> R accept(Visitor<R> visitor);\n")
-    file.write("}")
+    file.write("}\n")
     file.close()
 
 
 
-defineAst(path, "Expr", types)
+defineAst(path, "Expr", [
+    "Binary   :  Expr left, Token operator, Expr right",
+    "Grouping : Expr expression",
+    "Literal  : Object value",
+    "Unary    : Token operator, Expr right",
+])
+defineAst(path, "Stmt", [
+    "Expression : Expr expression",
+    "Print      : Expr expression"
+])
