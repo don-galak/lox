@@ -1,3 +1,13 @@
 #! /bin/bash
+
+file=$1
+
 javac com/craftinginterpreters/lox/Lox.java
-java com/craftinginterpreters/lox/Lox
+
+if [ -z "$1" ]
+    then
+        java com/craftinginterpreters/lox/Lox    
+    else
+        # java com/craftinginterpreters/lox/Lox "../../../examples/$file"
+        java com/craftinginterpreters/lox/Lox "./examples/$file"
+fi

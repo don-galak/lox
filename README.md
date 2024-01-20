@@ -16,11 +16,14 @@ Build tool: `cd java && javac com/craftinginterpreters/tool/GenerateAst.java`
 
 Run tool: `cd java && java com/craftinginterpreters/tool/GenerateAst com/craftinginterpreters/lox`
 
-or type:
+or type: `cd java && ./generate`. You will be prompted to select in which language you want the script to be executed. Currently supported languages: 
+* java
+* javascript
+* python
+* bash
+* go
 
-* `cd java && ./generate java` for the `java` version
-* `cd java && ./generate bash` for the `bash` version
-* `cd java && ./generate js` for the `javascript` version
+
 
 also check [Just enough Java for Crafting Interpreters](https://jesse.sh/just-enough-java-for-crafting-interpreters/)
 
@@ -30,9 +33,10 @@ also check [Just enough Java for Crafting Interpreters](https://jesse.sh/just-en
 * What is an Object in java?
 * How do you initialize a constructor in a class?
 * How do you pass command line arguments in java and which method must be used, to do so?
+* Why doesn't java allow usage of lowercase `void` as a generic type argument?<br /> - Answer - Because of obscure reasons having to do with type erasure and the stack. Instead there is a separate `Void` type specifically for this use.
 * What does the `@IntrinsicCandidate` annotation do?
 * Let's say you have an `enum` in a package. How can you use the enum values directly without having to write: `Enum.`?<br /> - Answer - By typing: `Enum.*`. This is the static import and saves you from having to type `Enum.Value`
-* Java is a statically typed language. Which means that that type errors are detected and reported at compile time. Is there any case where Java does runtime type checks?<br /> - Answer - Yes. Type casting. The only reason the static checker can presume that casts always succeed without violating the language's soundness guarantees, is because the cast is checked at runtime and throws an exception on failure.
+* Java is a statically typed language. Which means that type errors are detected and reported at compile time. Is there any case where Java does runtime type checks?<br /> - Answer - Yes. Type casting. The only reason the static checker can presume that casts always succeed without violating the language's soundness guarantees, is because the cast is checked at runtime and throws an exception on failure.
 
 ##### Notes
 
