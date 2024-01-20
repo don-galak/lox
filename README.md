@@ -10,6 +10,10 @@ Run repl: `java com/craftinginterpreters/lox/Lox`
 
 or, to do both, type: `cd java && ./run`
 
+To execute a file run: `cd java && ./run ${filename}`
+
+- Note: the file must be in the `java/examples` folder
+
 Exit the repl by `Ctrl + d`
 
 Build tool: `cd java && javac com/craftinginterpreters/tool/GenerateAst.java`
