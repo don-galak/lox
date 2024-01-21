@@ -14,10 +14,12 @@ function main() {
         "Grouping : Expr expression"
         "Literal  : Object value"
         "Unary    : Token operator, Expr right"
+        "Variable : Token name"
     )
     statements=(
         "Expression : Expr expression"
         "Print      : Expr expression"
+        "Var        : Token name, Expr initializer"
     )
 
     defineAst $1 "Expr" "${expressions[@]}"

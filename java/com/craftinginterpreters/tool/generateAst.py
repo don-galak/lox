@@ -69,8 +69,10 @@ defineAst(path, "Expr", [
     "Grouping : Expr expression",
     "Literal  : Object value",
     "Unary    : Token operator, Expr right",
+    "Variable : Token name"
 ])
 defineAst(path, "Stmt", [
     "Expression : Expr expression",
-    "Print      : Expr expression"
+    "Print      : Expr expression",
+    "Var        : Token name, Expr initializer"
 ])
