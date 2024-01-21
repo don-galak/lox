@@ -20,7 +20,7 @@ Build tool: `cd java && javac com/craftinginterpreters/tool/GenerateAst.java`
 
 Run tool: `cd java && java com/craftinginterpreters/tool/GenerateAst com/craftinginterpreters/lox`
 
-or type: `cd java && ./generate`. You will be prompted to select in which language you want the script to be executed. Currently supported languages: 
+or type: `cd java && ./gen`. You will be prompted to select in which language you want the script to be executed. Currently supported languages: 
 * java
 * javascript
 * python
