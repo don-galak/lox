@@ -6,15 +6,7 @@ import (
 	"strings"
 )
 
-var sprintf = fmt.Sprintf
-
 type Write func(data string)
-
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
 
 func main() {
 	args := os.Args
@@ -41,34 +33,65 @@ func main() {
 }
 
 func defineAst(outputDir string, baseName string, types []string) {
-	path := fmt.Sprintf("%s/%s.java", outputDir, baseName)
-	f, err := os.Create(path)
-	check(err)
+	path := outputDir + "/" + baseName + ".java"
+	f, _ := os.Create(path)
 	defer f.Close()
-	write := func(data string) {
-		_, e := f.Write([]byte(data))
-		check(e)
-	}
+
+	write := func(data string) { f.Write([]byte(data)) }
 
 	write("package com.craftinginterpreters.lox;\n\n")
 	write("import java.util.List;\n\n")
-	write(fmt.Sprintf("abstract class %s {\n", baseName))
+	write("abstract class " + baseName + " {\n")
 
 	defineVisitor(write, baseName, types)
 
 	// The AST classes.
-	// for _, t := range types {
-	// 	className := strings.Trim(strings.Split(t, ":")[0], "")
-	// 	fields := strings.Split()
-	// }
+	for _, t := range types {
+		elements := strings.Split(t, ":")
+		className := strings.TrimSpace(elements[0])
+		fields := strings.TrimSpace(elements[1])
+		defineType(write, baseName, className, fields)
+	}
+
+	// The base accept() method.
+	write("\n  abstract <R> R accept(Visitor<R> visitor);\n")
+	write("}\n")
 }
 
 func defineVisitor(write Write, baseName string, types []string) {
 	write("  interface Visitor<R> {\n")
 
 	for _, t := range types {
-		typeName := strings.Split(t, "")
-		write(sprintf("    R visit%s%s(%s %s);\n", typeName, baseName, typeName, strings.ToLower(baseName)))
+		typeName := strings.TrimSpace(strings.Split(t, ":")[0])
+		write("    R visit" + typeName + baseName + "(" + typeName + " " + strings.ToLower(baseName) + ");\n")
+	}
+	write("  }\n")
+}
+
+func defineType(write Write, baseName string, className string, fieldList string) {
+	write("  static class " + className + " extends " + baseName + " {\n")
+
+	// Constructor
+	write("    " + className + "(" + fieldList + ") {\n")
+
+	// Store parameters in fields.
+	fields := strings.Split(fieldList, ", ")
+	for _, f := range fields {
+		name := strings.Split(f, " ")[1]
+		write("      this." + name + " = " + name + ";\n")
+	}
+
+	write("    }\n\n")
+
+	// Visitor pattern.
+	write("    @Override\n")
+	write("    <R> R accept(Visitor<R> visitor) {\n")
+	write("      return visitor.visit" + className + baseName + "(this);\n")
+	write("    }\n\n")
+
+	// Fields.
+	for _, f := range fields {
+		write("    final " + f + ";\n")
 	}
 	write("  }\n")
 }

@@ -33,10 +33,8 @@ public class GenerateAst {
         String path = outputDir + "/" + baseName + ".java";
         PrintWriter writer = new PrintWriter(path, "UTF-8");
 
-        writer.println("package com.craftinginterpreters.lox;");
-        writer.println();
-        writer.println("import java.util.List;");
-        writer.println();
+        writer.println("package com.craftinginterpreters.lox;\n");
+        writer.println("import java.util.List;\n");
         writer.println("abstract class " + baseName + " {");
 
         defineVisitor(writer, baseName, types);
@@ -49,8 +47,7 @@ public class GenerateAst {
         }
 
         // The base accept() method.
-        writer.println();
-        writer.println("  abstract <R> R accept(Visitor<R> visitor);");
+        writer.println("\n  abstract <R> R accept(Visitor<R> visitor);");
         writer.println("}");
         writer.close();
     }
@@ -62,7 +59,6 @@ public class GenerateAst {
             String typeName = type.split(":")[0].trim();
             writer.println("    R visit" + typeName + baseName + "(" + typeName + " " + baseName.toLowerCase() + ");");
         }
-
         writer.println("  }");
     }
 
@@ -82,10 +78,9 @@ public class GenerateAst {
             writer.println("      this." + name + " = " + name + ";");
         }
 
-        writer.println("    }");
+        writer.println("    }\n");
 
         // Visitor pattern.
-        writer.println();
         writer.println("    @Override");
         writer.println("    <R> R accept(Visitor<R> visitor) {");
         writer.println("      return visitor.visit" + className + baseName + "(this);");
@@ -96,7 +91,6 @@ public class GenerateAst {
         for (String field : fields) {
             writer.println("    final " + field + ";");
         }
-
         writer.println("  }");
     }
 }

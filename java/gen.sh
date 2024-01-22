@@ -6,7 +6,7 @@ select opt in "${options[@]}"
 do
     case $opt in
         "bash")
-            ./com/craftinginterpreters/tool/generateAst com/craftinginterpreters/lox
+            ./com/craftinginterpreters/tool/generateAst.sh com/craftinginterpreters/lox
             break
             ;;
         "java")
