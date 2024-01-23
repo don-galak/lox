@@ -62,9 +62,8 @@ def defineAst(outputDir, baseName, types):
     file.write("}\n")
     file.close()
 
-
-
 defineAst(path, "Expr", [
+    "Assign   : Token name, Expr value",
     "Binary   :  Expr left, Token operator, Expr right",
     "Grouping : Expr expression",
     "Literal  : Object value",

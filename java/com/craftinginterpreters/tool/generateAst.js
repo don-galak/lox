@@ -7,6 +7,7 @@ if (!process.argv[2]) {
 
 const outputDir = process.argv[2];
 defineAst(outputDir, "Expr", [
+  "Assign   : Token name, Expr value",
   "Binary   :  Expr left, Token operator, Expr right",
   "Grouping : Expr expression",
   "Literal  : Object value",
