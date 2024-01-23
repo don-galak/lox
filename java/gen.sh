@@ -1,17 +1,17 @@
 # #!/bin/bash
 
 PS3='Please enter your choice: '
-options=("bash" "java" "javascript" "python" "go" "Quit")
+options=("bash" "java" "javascript" "python" "go" "ocaml" "Quit")
 select opt in "${options[@]}"
 do
     case $opt in
-        "bash")
-            ./com/craftinginterpreters/tool/generateAst.sh com/craftinginterpreters/lox
-            break
-            ;;
         "java")
             javac com/craftinginterpreters/tool/GenerateAst.java
             java com/craftinginterpreters/tool/GenerateAst com/craftinginterpreters/lox
+            break
+            ;;
+        "bash")
+            ./com/craftinginterpreters/tool/generateAst.sh com/craftinginterpreters/lox
             break
             ;;
         "javascript")
@@ -24,6 +24,10 @@ do
             ;;
         "go")
             go run ./com/craftinginterpreters/tool/generateAst.go com/craftinginterpreters/lox
+            break
+            ;;
+        "ocaml")
+            ocaml ./com/craftinginterpreters/tool/generateAst.ml com/craftinginterpreters/lox
             break
             ;;
         "Quit")

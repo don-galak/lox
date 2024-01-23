@@ -22,10 +22,11 @@ Run tool: `cd java && java com/craftinginterpreters/tool/GenerateAst com/craftin
 
 or type: `cd java && ./gen`. You will be prompted to select in which language you want the script to be executed. Currently supported languages: 
 * java
+* bash
 * javascript
 * python
-* bash
 * go
+* OCaml
 
 
 
@@ -41,11 +42,19 @@ also check [Just enough Java for Crafting Interpreters](https://jesse.sh/just-en
 * What does the `@IntrinsicCandidate` annotation do?
 * Let's say you have an `enum` in a package. How can you use the enum values directly without having to write: `Enum.`?<br /> - Answer - By typing: `Enum.*`. This is the static import and saves you from having to type `Enum.Value`
 * Java is a statically typed language. Which means that type errors are detected and reported at compile time. Is there any case where Java does runtime type checks?<br /> - Answer - Yes. Type casting. The only reason the static checker can presume that casts always succeed without violating the language's soundness guarantees, is because the cast is checked at runtime and throws an exception on failure.
+* Does java support partial function application?<br/> - Answer - Yes
+* How do you define a partial function? <br/> - Answer - 
+```
+public static <A, B, R> Function<B, R> partialApply(BiFunction<A, B, R> biFunc, A value) {
+    return b -> biFunc.apply(value, b);
+}
+```
+
 
 ##### Notes
 
 I took the liberty of creating a `bash` version of the `GenerateAst.java` just for the sake of it. I learned a lot about bash and 
-decided to never use it again for such a task :P. The assumptions I had about how an array is passed as an argument to a function, or
+decided to never use it again for such a task. The assumptions I had about how an array is passed as an argument to a function, or
 the way string manipulation is accomplished, were all wrong. 
 
 For example if you want to give an array as an argument, you can only retrieve it by doing: `array=("$@")`.
