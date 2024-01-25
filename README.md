@@ -49,6 +49,7 @@ public static <A, B, R> Function<B, R> partialApply(BiFunction<A, B, R> biFunc, 
     return b -> biFunc.apply(value, b);
 }
 ```
+* When you have a class that is not extending any other class, it has a variable and it refers to that variable by not using "this.", does that throw a compile time error? If so what is it?<br /> No compile time error is thrown. When a variable is referred to that way, it probably means that there is a reference to the outer scope which is an instance of the same class. This is useful for creating a chain or hierarchy of environments, commonly used in the implementation of scopes and nested scopes in interpreters or compilers.
 
 
 ##### Notes
