@@ -19,6 +19,7 @@ function main() {
     )
     statements=(
         "Expression : Expr expression"
+        "Block      : List<Stmt> statements",
         "Print      : Expr expression"
         "Var        : Token name, Expr initializer"
     )
