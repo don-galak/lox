@@ -64,3 +64,6 @@ Also it must always be the last argument and inside the function body you must u
 Finally, there is no straightforward way to split a string into an array with a "complex" delimeter. 
 Having the `Expr left, Token operator, Expr right` string, you can't use something like `string.split(", ")`.
 It just doesn't work, as it creates an array of length `6` instead of `3`. Observe how I generate the constructors and `final` variables in `defineType`.
+
+##### Fun facts
+In the `C` language, the opening parenthesis after `if` doesn’t do anything useful. Dennis Ritchie put it there so he could use `)` as the ending delimiter without having unbalanced parentheses.
