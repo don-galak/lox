@@ -18,10 +18,12 @@ function main() {
         "Variable : Token name"
     )
     statements=(
+        "Block      : List<Stmt> statements"
         "Expression : Expr expression"
-        "Block      : List<Stmt> statements",
+        "If         : Expr condition, Stmt thenBranch, Stmt elseBranch"
         "Print      : Expr expression"
         "Var        : Token name, Expr initializer"
+        "While      : Expr condition, Stmt body"
     )
 
     defineAst $1 "Expr" "${expressions[@]}"
