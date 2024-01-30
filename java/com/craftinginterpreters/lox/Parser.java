@@ -7,7 +7,8 @@ import java.util.List;
 import static com.craftinginterpreters.lox.TokenType.*;
 
 class Parser {
-    private static class ParseError extends RuntimeException {}
+    private static class ParseError extends RuntimeException {
+    }
 
     private final List<Token> tokens;
     private int current = 0;
@@ -30,7 +31,10 @@ class Parser {
 
     private Stmt declaration() {
         try {
-            if (match(VAR)) return varDeclaration();
+            if (match(FUN))
+                return function("function");
+            if (match(VAR))
+                return varDeclaration();
 
             return statement();
         } catch (ParseError error) {
@@ -40,11 +44,16 @@ class Parser {
     }
 
     private Stmt statement() {
-        if (match(FOR)) return forStatement();
-        if (match(IF)) return ifStatement();
-        if (match(PRINT)) return printStatement();
-        if (match(WHILE)) return whileStatement();
-        if (match(LEFT_BRACE)) return new Stmt.Block(block());
+        if (match(FOR))
+            return forStatement();
+        if (match(IF))
+            return ifStatement();
+        if (match(PRINT))
+            return printStatement();
+        if (match(WHILE))
+            return whileStatement();
+        if (match(LEFT_BRACE))
+            return new Stmt.Block(block());
 
         return expressionStatement();
     }
@@ -76,11 +85,11 @@ class Parser {
 
         if (increment != null) {
             body = new Stmt.Block(
-                Arrays.asList(body, new Stmt.Expression(increment))
-            );
+                    Arrays.asList(body, new Stmt.Expression(increment)));
         }
 
-        if (condition == null) condition = new Expr.Literal(true);
+        if (condition == null)
+            condition = new Expr.Literal(true);
         body = new Stmt.While(condition, body);
 
         if (initializer != null) {
@@ -90,7 +99,7 @@ class Parser {
         return body;
     }
 
-    private Stmt ifStatement(){
+    private Stmt ifStatement() {
         consume(LEFT_PAREN, "Expect '(' after 'if'.");
         Expr condition = expression();
         consume(RIGHT_PAREN, "Expect ')' after if condition.");
@@ -137,6 +146,25 @@ class Parser {
         return new Stmt.Expression(expr);
     }
 
+    private Stmt.Function function(String kind) {
+        Token name = consume(IDENTIFIER, "Expect " + kind + " name.");
+        List<Token> parameters = new ArrayList<>();
+        if (!check(RIGHT_PAREN)) {
+            do {
+                if (parameters.size() >= 255) {
+                    error(peek(), "Can't have more than 255 parameters.");
+                }
+
+                parameters.add(consume(IDENTIFIER, "Expect parameter name."));
+            } while (match(COMMA));
+        }
+        consume(RIGHT_PAREN, "Expect ')' after parameters");
+
+        consume(LEFT_BRACE, "Expect '{' before " + kind + " body.");
+        List<Stmt> body = block();
+        return new Stmt.Function(name, parameters, body);
+    }
+
     private List<Stmt> block() {
         List<Stmt> statements = new ArrayList<>();
 
@@ -156,7 +184,7 @@ class Parser {
             Expr value = assignment();
 
             if (expr instanceof Expr.Variable) {
-                Token name = ((Expr.Variable)expr).name;
+                Token name = ((Expr.Variable) expr).name;
                 return new Expr.Assign(name, value);
             }
 
@@ -329,7 +357,8 @@ class Parser {
         advance();
 
         while (!isAtEnd()) {
-            if (previous().type == SEMICOLON) return;
+            if (previous().type == SEMICOLON)
+                return;
 
             switch (peek().type) {
                 case CLASS:
