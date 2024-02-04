@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import com.craftinginterpreters.lox.Expr.Assign;
 import com.craftinginterpreters.lox.Expr.Variable;
 
 class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
@@ -36,6 +37,13 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
             resolve(stmt.initializer);
         }
         define(stmt.name);
+        return null;
+    }
+
+    @Override
+    public Void visitAssignExpr(Expr.Assign expr) {
+        resolve(expr.value);
+        resolveLocal(expr, expr.name);
         return null;
     }
 
