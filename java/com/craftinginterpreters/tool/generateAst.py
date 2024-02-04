@@ -68,6 +68,7 @@ defineAst(path, "Expr", [
     "Call     : Expr callee, Token paren, List<Expr> arguments",
     "Grouping : Expr expression",
     "Literal  : Object value",
+    "Logical  : Expr left, Token operator, Expr right",
     "Unary    : Token operator, Expr right",
     "Variable : Token name"
 ])
