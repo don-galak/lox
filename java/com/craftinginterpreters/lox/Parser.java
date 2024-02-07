@@ -143,7 +143,7 @@ class Parser {
         if (!check(SEMICOLON)) {
             value = expression();
         }
-        
+
         consume(SEMICOLON, "Expect ';' after return value.");
         return new Stmt.Return(keyword, value);
     }
@@ -227,7 +227,7 @@ class Parser {
     private Expr or() {
         Expr expr = and();
 
-        while(match(OR)) {
+        while (match(OR)) {
             Token operator = previous();
             Expr right = and();
             expr = new Expr.Logical(expr, operator, right);
