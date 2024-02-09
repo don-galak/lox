@@ -1,8 +1,22 @@
 package com.craftinginterpreters.lox;
 
+import com.craftinginterpreters.lox.Expr.Get;
+import com.craftinginterpreters.lox.Expr.Set;
+
 class AstPrinter implements Expr.Visitor<String> {
     String print(Expr expr) {
         return expr.accept(this);
+    }
+
+    @Override
+    public String visitGetExpr(Get expr) {
+        return null;
+    }
+
+    @Override
+    public String visitSetExpr(Set expr) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override

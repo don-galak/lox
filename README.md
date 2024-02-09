@@ -31,7 +31,7 @@ or type: `cd java && ./gen`. You will be prompted to select in which language yo
 
 also check [Just enough Java for Crafting Interpreters](https://jesse.sh/just-enough-java-for-crafting-interpreters/)
 
-##### Questions
+##### Questions about java
 
 - Which java classes implement the List interface?
 - What is an Object in java?
