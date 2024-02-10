@@ -69,3 +69,7 @@ It just doesn't work, as it creates an array of length `6` instead of `3`. Obser
 ##### Fun facts
 
 In the `C` language, the opening parenthesis after `if` doesn’t do anything useful. Dennis Ritchie put it there so he could use `)` as the ending delimiter without having unbalanced parentheses.
+
+In lox the way `this` keyword works, is by creating an implicit scope outside of the class instance and binding the instance to the `this`.
+
+In lox whenever a `this` expression is encountered (at least inside a method) it will resolve to a “local variable” defined in an implicit scope just outside of the block for the method body.
