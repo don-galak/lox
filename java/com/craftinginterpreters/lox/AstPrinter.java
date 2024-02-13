@@ -1,8 +1,15 @@
 package com.craftinginterpreters.lox;
 
+import com.craftinginterpreters.lox.Expr.Super;
+
 class AstPrinter implements Expr.Visitor<String> {
     String print(Expr expr) {
         return expr.accept(this);
+    }
+
+    @Override
+    public String visitSuperExpr(Super expr) {
+        return null;
     }
 
     @Override
