@@ -51,7 +51,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         declare(stmt.name);
         define(stmt.name);
 
-        if(stmt.superclass != null && stmt.name.lexeme.equals(stmt.superclass.name.lexeme)) {
+        if (stmt.superclass != null && stmt.name.lexeme.equals(stmt.superclass.name.lexeme)) {
             Lox.error(stmt.superclass.name, "A class can't inherit from itself.");
         }
 
@@ -135,7 +135,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     @Override
     public Void visitVarStmt(Stmt.Var stmt) {
         declare(stmt.name);
-        if (stmt.name != null) {
+        if (stmt.initializer != null) {
             resolve(stmt.initializer);
         }
         define(stmt.name);
@@ -158,8 +158,8 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitBinaryExpr(Expr.Binary expr) {
-        resolve(expr.right);
         resolve(expr.left);
+        resolve(expr.right);
         return null;
     }
 
@@ -293,7 +293,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     }
 
     private void resolveLocal(Expr expr, Token name) {
-        for (int i = scopes.size() - 1; i >= 0; i++) {
+        for (int i = scopes.size() - 1; i >= 0; i--) {
             if (scopes.get(i).containsKey(name.lexeme)) {
                 interpreter.resolve(expr, scopes.size() - 1 - i);
                 return;
