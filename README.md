@@ -53,6 +53,12 @@ public static <A, B, R> Function<B, R> partialApply(BiFunction<A, B, R> biFunc, 
 - When you have a class that is not extending any other class, it has a variable and it refers to that variable by not using "this.", does that throw a compile time error? If so what is it?<br /> No compile time error is thrown. When a variable is referred to that way, it probably means that there is a reference to the outer scope which is an instance of the same class. This is useful for creating a chain or hierarchy of environments, commonly used in the implementation of scopes and nested scopes in interpreters or compilers.
 - How many arguments can a method accept per the `Java` specification?<br /> - Answer - The limit is 254 arguments if the method is an instance method. That's because `this` = the receiver of the method - works like an argument that is implicitly passed to the method, so it claims one of the slots.
 
+### C version
+
+#### Usage
+
+TODO
+
 ##### Notes
 
 I took the liberty of creating a `bash` version of the `GenerateAst.java` just for the sake of it. I learned a lot about bash and
