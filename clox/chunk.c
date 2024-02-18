@@ -7,7 +7,7 @@ void initChunk(Chunk* chunk) {
     chunk->count = 0;
     chunk->capacity = 0;
     chunk->code = NULL;
-    initializeValueArray(&chunk->constants);
+    initValueArray(&chunk->constants);
 }
 
 void freeChunk(Chunk* chunk) {
