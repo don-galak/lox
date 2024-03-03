@@ -57,7 +57,9 @@ public static <A, B, R> Function<B, R> partialApply(BiFunction<A, B, R> biFunc, 
 
 #### Usage
 
-TODO
+Build and run: `cd clox && make run`
+
+Uses a `makefile`, which builds every c file using a wildcard and then executes.
 
 ### Notes
 
@@ -71,6 +73,10 @@ Also it must always be the last argument and inside the function body you must u
 Finally, there is no straightforward way to split a string into an array with a "complex" delimeter.
 Having the `Expr left, Token operator, Expr right` string, you can't use something like `string.split(", ")`.
 It just doesn't work, as it creates an array of length `6` instead of `3`. Observe how I generate the constructors and `final` variables in `defineType`.
+
+---
+
+Regarding the C part, I didn't want to go through the same path as I did with java and bash scripts. To my surprise I found out about `make` which makes everything so much easier. Also it was was created in 1976 and I felt a bit dumb, but I guess trying to rediscover the wheel also trains the wandering mind.
 
 ### Fun facts
 
