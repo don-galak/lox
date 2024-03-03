@@ -79,3 +79,68 @@ In the `C` language, the opening parenthesis after `if` doesn’t do anything us
 In lox the way `this` keyword works, is by creating an implicit scope outside of the class instance and binding the instance to the `this`.
 
 In lox whenever a `this` expression is encountered (at least inside a method) it will resolve to a “local variable” defined in an implicit scope just outside of the block for the method body.
+
+---
+
+#### Note about macros:
+```
+#define BINARY_OP(op) \
+    do { \
+      double b = pop(); \
+      double a = pop(); \
+      push(a op b); \
+    } while (false)
+```
+
+This macro needs to expand a series of statements. To not cause any unprecedented errors, 
+we need to ensure those statements all end up in the same scope when the macro is expanded.
+
+Having defined the following macro:
+
+```
+#define WAKE_UP() makeCoffee(); drinkCoffee();
+```
+
+And then used it:
+
+```
+if (morning) WAKE_UP();
+```
+
+The intent is to execute both statements of the macro body only if `morning` is true. But it
+expands to:
+
+```
+if (morning) makeCoffee(); drinkCoffee();;
+```
+
+Notice the trailing `;`?
+
+In this case, the if attaches only to the first statement, meaning the `drinkCoffee()` is always executed:
+
+```
+if (morning)
+    makeCoffee();;
+drinkCoffee();
+```
+
+Maybe using a block would fix the problem?
+
+```
+define WAKE_UP() { makeCoffee(); drinkCoffee(); }
+```
+
+That's better, but still there's still the risk:
+
+```
+if (morning) 
+    WAKE_UP();
+else
+    doSomethingElse();
+```
+
+Now the compiler will throw an error because of that trailing `;` after the macro's block.
+
+Using a do while loop in the macro looks funny, but it provides a way to contain multiple statements inside a block that also permits a semicolon at the end.
+
+See more in: [stackoverflow](https://stackoverflow.com/questions/1067226/c-multi-line-macro-do-while0-vs-scope-block)
