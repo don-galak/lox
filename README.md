@@ -59,7 +59,7 @@ public static <A, B, R> Function<B, R> partialApply(BiFunction<A, B, R> biFunc, 
 
 TODO
 
-##### Notes
+### Notes
 
 I took the liberty of creating a `bash` version of the `GenerateAst.java` just for the sake of it. I learned a lot about bash and
 decided to never use it again for such a task. The assumptions I had about how an array is passed as an argument to a function, or
@@ -72,7 +72,7 @@ Finally, there is no straightforward way to split a string into an array with a 
 Having the `Expr left, Token operator, Expr right` string, you can't use something like `string.split(", ")`.
 It just doesn't work, as it creates an array of length `6` instead of `3`. Observe how I generate the constructors and `final` variables in `defineType`.
 
-##### Fun facts
+### Fun facts
 
 In the `C` language, the opening parenthesis after `if` doesn’t do anything useful. Dennis Ritchie put it there so he could use `)` as the ending delimiter without having unbalanced parentheses.
 
