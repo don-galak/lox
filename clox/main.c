@@ -39,6 +39,7 @@ static void repl()
 static char *readFile(const char *path)
 {
     FILE *file = fopen(path, "rb");
+    // File doesn't exist, or user doesn't have access to it.
     if (file == NULL)
     {
         fprintf(stderr, "Could not open file \"%s\".\n", path);
