@@ -15,6 +15,12 @@ void compile(const char* source) {
         } else {
             printf("   | ");
         }
+        /**
+         * '%.*s' is a format specifier for a string.
+         * The '.*' indicates that the width of the string will be determined dynamically
+         * by the argument that follows it. In this case, 'token.length' determines the width of the string.
+         * 'token.start' is the pointer to the start of the string.
+        */
         printf("%2d '%.*s'\n", token.type, token.length, token.start);
 
         if (token.type == TOKEN_EOF) break;
