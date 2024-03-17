@@ -74,7 +74,27 @@ static InterpretResult run() {
 #undef BINARY_OP
 }
 
+/**
+ * Create a new empty chunk and pass it over to the compiler. 
+ * The compiler will take the user's program and fill up the 
+ * chunk with bytecode.
+ * If errors are encountered compiler returns false and the unusable chunk is discarded. 
+ * Otherwise the completed chunk is sent over to the VM to be executed.
+ * When the VM finishes the chunk is freed.
+*/
 InterpretResult interpret(const char* source) {
-    compile(source);
-    return INTERPRET_OK;
+    Chunk chunk;
+    initChunk(&chunk);
+
+    if (!compile(source, &chunk)) {
+        freeChunk(&chunk);
+        return INTERPRET_RUNTIME_ERROR;
+    }
+
+    vm.chunk = &chunk;
+    vm.ip = vm.chunk->code;
+
+    InterpretResult result = run();
+    freeChunk(&chunk);
+    return result;
 }
