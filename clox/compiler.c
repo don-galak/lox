@@ -4,19 +4,23 @@
 #include "compiler.h"
 #include "scanner.h"
 
-typedef struct {
+typedef struct
+{
     Token current;
     Token previous;
 } Parser;
 
 Parser parser;
 
-static void advance() {
+static void advance()
+{
     parser.previous = parser.current;
 
-    for (;;) {
+    for (;;)
+    {
         parser.current = scanToken();
-        if (parser.current.type != TOKEN_ERROR) break;
+        if (parser.current.type != TOKEN_ERROR)
+            break;
 
         errorAtCurrent(parser.current.start);
     }
@@ -25,7 +29,7 @@ static void advance() {
 /**
  * The call to advance() "primes the pump" on the scanner.
  * Then a single expression is parsed.
- * After the expression is compiled we should be at the end 
+ * After the expression is compiled we should be at the end
  * of the source code, so we check for the EOF token.
  */
 bool compile(const char *source, Chunk *chunk)
