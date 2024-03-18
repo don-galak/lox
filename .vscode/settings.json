@@ -7,6 +7,8 @@
   "C_Cpp.vcFormat.newLine.beforeOpenBrace.function": "sameLine",
   "C_Cpp.vcFormat.newLine.closeBraceSameLine.emptyFunction": true,
   "C_Cpp.vcFormat.newLine.scopeBracesOnSeparateLines": false,
+  "C_Cpp.vcFormat.newLine.beforeElse": false,
+  "C_Cpp.vcFormat.newLine.beforeOpenBrace.type": "sameLine",
   "C_Cpp.vcFormat.indent.caseContents": true,
   "C_Cpp.vcFormat.indent.caseLabels": true
 }
