@@ -4,8 +4,7 @@
 #include "compiler.h"
 #include "scanner.h"
 
-typedef struct
-{
+typedef struct {
     Token current;
     Token previous;
     bool hadError;
@@ -13,17 +12,14 @@ typedef struct
 
 Parser parser;
 
-static void errorAt(Token* token, const char* message)
-{
+static void errorAt(Token* token, const char* message) {
     fprintf(stderr, "[line %d] Error", token->line);
 
     if (token->type == TOKEN_EOF) {
         fprintf(stderr, " at end");
-    }
-    else if (token->type == TOKEN_ERROR) {
+    } else if (token->type == TOKEN_ERROR) {
         // Nothing.
-    }
-    else {
+    } else {
         /**
          * '%.*s' is a format specifier for a string.
          * The '.*' indicates that the width of the string will be determined dynamically
@@ -37,18 +33,15 @@ static void errorAt(Token* token, const char* message)
     parser.hadError = true;
 }
 
-static void error(const char* message)
-{
+static void error(const char* message) {
     errorAt(&parser.previous, message);
 }
 
-static void errorAtCurrent(const char* message)
-{
+static void errorAtCurrent(const char* message) {
     errorAt(&parser.current, message);
 }
 
-static void advance()
-{
+static void advance() {
     parser.previous = parser.current;
 
     for (;;) {
@@ -66,8 +59,7 @@ static void advance()
  * After the expression is compiled we should be at the end
  * of the source code, so we check for the EOF token.
  */
-bool compile(const char* source, Chunk* chunk)
-{
+bool compile(const char* source, Chunk* chunk) {
     initScanner(source);
     advance();
     expression();

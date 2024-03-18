@@ -15,8 +15,7 @@ void initVM() {
     resetStack();
 }
 
-void freeVM(){
-}
+void freeVM() {}
 
 void push(Value value) {
     *vm.stackTop = value;
@@ -59,7 +58,7 @@ static InterpretResult run() {
             case OP_ADD:      BINARY_OP(+); break;
             case OP_SUBTRACT: BINARY_OP(-); break;
             case OP_MULTIPLY: BINARY_OP(*); break;
-            case OP_DIVIDE:   BINARY_OP(/); break;
+            case OP_DIVIDE:   BINARY_OP(/ ); break;
             case OP_NEGATE:   push(-pop()); break;
             case OP_RETURN: {
                 printValue(pop());
@@ -75,10 +74,10 @@ static InterpretResult run() {
 }
 
 /**
- * Create a new empty chunk and pass it over to the compiler. 
- * The compiler will take the user's program and fill up the 
+ * Create a new empty chunk and pass it over to the compiler.
+ * The compiler will take the user's program and fill up the
  * chunk with bytecode.
- * If errors are encountered compiler returns false and the unusable chunk is discarded. 
+ * If errors are encountered compiler returns false and the unusable chunk is discarded.
  * Otherwise the completed chunk is sent over to the VM to be executed.
  * When the VM finishes the chunk is freed.
 */
