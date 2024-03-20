@@ -1,6 +1,7 @@
 {
   "files.associations": {
-    "vector": "c"
+    "vector": "c",
+    "common.h": "c"
   },
   "C_Cpp.formatting": "vcFormat",
   "C_Cpp.vcFormat.newLine.beforeOpenBrace.block": "sameLine",
@@ -11,5 +12,7 @@
   "C_Cpp.vcFormat.newLine.beforeOpenBrace.type": "sameLine",
   "C_Cpp.vcFormat.newLine.closeBraceSameLine.emptyType": true,
   "C_Cpp.vcFormat.indent.caseContents": true,
-  "C_Cpp.vcFormat.indent.caseLabels": true
+  "C_Cpp.vcFormat.indent.caseLabels": true,
+  "C_Cpp.enhancedColorization": "enabled",
+  "C_Cpp.vcFormat.space.insertAfterSemicolon": true
 }

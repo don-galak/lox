@@ -28,7 +28,7 @@ static void repl() {
  * 2. We call fseek with 0l (long integer value with all the bits set to zero - generally the definition of 0)
  *    and SEEK_END to reach the end of the file.
  * 3. Then we call ftell, which tells us how many bytes we are from the start of the file.
- *    Since we seeked to the end, that's the size.
+ *    Since we seeked (sought?) to the end, that's the size.
  * 4. We rewind back to the beginning.
  * 5. Allocate a string of fileSize.
  * 6. Read the whole file in a single batch.
