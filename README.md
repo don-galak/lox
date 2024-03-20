@@ -86,9 +86,32 @@ In lox the way `this` keyword works, is by creating an implicit scope outside of
 
 In lox whenever a `this` expression is encountered (at least inside a method) it will resolve to a “local variable” defined in an implicit scope just outside of the block for the method body.
 
+In `C` macros can be abused extensively and lead to kinda funny looking code. If you define the following macros:
+
+```
+#define IF if(
+#define THEN ){
+#define ELSE } else {
+#define ELIF } else if {
+#define FI  ;}
+```
+
+, you will be able to to write something like:
+
+```
+IF true THEN
+    printf("hello!");
+FI
+```
+
+This is valid `C` code and will execute without errors!
+
+Such usage of macros is not uncommon and has been used by legends of [old](https://www.tuhs.org/cgi-bin/utree.pl?file=V7/usr/src/cmd/sh/mac.h)!
+
 ---
 
-#### Note about macros:
+#### Note about BINARY_OP:
+
 ```
 #define BINARY_OP(op) \
     do { \
@@ -98,7 +121,7 @@ In lox whenever a `this` expression is encountered (at least inside a method) it
     } while (false)
 ```
 
-This macro needs to expand a series of statements. To not cause any unprecedented errors, 
+This macro needs to expand a series of statements. To not cause any unprecedented errors,
 we need to ensure those statements all end up in the same scope when the macro is expanded.
 
 Having defined the following macro:
@@ -139,7 +162,7 @@ define WAKE_UP() { makeCoffee(); drinkCoffee(); }
 That's better, but still there's still the risk:
 
 ```
-if (morning) 
+if (morning)
     WAKE_UP();
 else
     doSomethingElse();
