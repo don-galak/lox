@@ -102,6 +102,11 @@ static void endCompiler() {
     emitReturn();
 }
 
+static void grouping() {
+    expression();
+    consume(TOKEN_RIGHT_PAREN, "Expect ')' after expression.");
+}
+
 static void number() {
     double value = strtod(parser.previous.start, NULL);
     emitConstant(value);
