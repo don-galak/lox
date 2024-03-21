@@ -106,7 +106,7 @@ FI
 
 This is valid `C` code and will execute without errors!
 
-Such usage of macros is not uncommon and has been used by legends of [old](https://www.tuhs.org/cgi-bin/utree.pl?file=V7/usr/src/cmd/sh/mac.h)!
+Such usage of macros is not uncommon and has been used by [legends of old](https://www.tuhs.org/cgi-bin/utree.pl?file=V7/usr/src/cmd/sh/mac.h)!
 
 ---
 

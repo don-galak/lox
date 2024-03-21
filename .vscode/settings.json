@@ -14,5 +14,8 @@
   "C_Cpp.vcFormat.indent.caseContents": true,
   "C_Cpp.vcFormat.indent.caseLabels": true,
   "C_Cpp.enhancedColorization": "enabled",
-  "C_Cpp.vcFormat.space.insertAfterSemicolon": true
+  "C_Cpp.vcFormat.space.insertAfterSemicolon": true,
+  "files.trimTrailingWhitespace": true,
+  "editor.trimAutoWhitespace": true,
+  "files.trimFinalNewlines": true,
 }
