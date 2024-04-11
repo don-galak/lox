@@ -25,6 +25,8 @@ struct ObjString {
     char* chars;
 };
 
+ObjString* copyString(const char*, int length);
+
 /**
  * Why not just put the body of this function right in the macro?
  * What’s different about this one compared to the others? It’s because the body uses value twice.
