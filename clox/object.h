@@ -26,6 +26,7 @@ struct ObjString {
 };
 
 ObjString* copyString(const char*, int length);
+void printObject(Value value);
 
 /**
  * Why not just put the body of this function right in the macro?
