@@ -22,6 +22,10 @@ static ObjString* allocateString(char* chars, int length) {
     return string;
 }
 
+ObjString* takeString(char* chars, int length) {
+    return allocateString(chars, length);
+}
+
 /**
  * The string is terminated with: `heapChars[length] = '\0';`
  * This way we can pass the character array to C standard library functions that expect a terminated string.
