@@ -37,6 +37,9 @@ ObjString* copyString(const char*, int length);
  * If we put the body of isObjType() into the macro definition and then you did, say:
  * `IS_STRING(POP())`
  * then it would pop two values off the stack! Using a function fixes that.
+ *
+ * Also `inline` is used, which builds this function inside the macro it used in.
+ * This provides a performance boost.
  */
 static inline bool isObjType(Value value, ObjType type) {
     return IS_OBJ(value) && AS_OBJ(value)->type == type;

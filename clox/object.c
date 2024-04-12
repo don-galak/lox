@@ -6,6 +6,22 @@
 #include "value.h"
 #include "vm.h"
 
+#define ALLOCATE_OBJ(type, objectType) \
+    (type*)allocateObject(sizeof(type), objectType)
+
+static Obj* allocateObject(size_t size, ObjType type) {
+    Obj* object = (Obj*)reallocate(NULL, 0, size);
+    object->type = type;
+    return object;
+}
+
+static ObjString* allocateString(char* chars, int length) {
+    ObjString* string = ALLOCATE_OBJ(ObjString, OBJ_STRING);
+    string->length = length;
+    string->chars = chars;
+    return string;
+}
+
 /**
  * The string is terminated with: `heapChars[length] = '\0';`
  * This way we can pass the character array to C standard library functions that expect a terminated string.
