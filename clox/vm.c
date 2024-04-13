@@ -30,9 +30,12 @@ static void runtimeError(const char* format, ...) {
 
 void initVM() {
     resetStack();
+    vm.objects = NULL;
 }
 
-void freeVM() {}
+void freeVM() {
+    freeObjects();
+}
 
 void push(Value value) {
     *vm.stackTop = value;
@@ -115,7 +118,7 @@ static InterpretResult run() {
                 } else if (IS_NUMBER(peek(0)) && IS_NUMBER(peek(1))) {
                     double b = AS_NUMBER(pop());
                     double a = AS_NUMBER(pop());
-                    push(NUMBER_VAL(a+b));
+                    push(NUMBER_VAL(a + b));
                 } else {
                     runtimeError("Operands must be two numbers or two strings.");
                     return INTERPRET_RUNTIME_ERROR;

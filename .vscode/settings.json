@@ -12,7 +12,8 @@
     "optional": "c",
     "ratio": "c",
     "system_error": "c",
-    "tuple": "c"
+    "tuple": "c",
+    "object.h": "c"
   },
   "C_Cpp.formatting": "vcFormat",
   "C_Cpp.vcFormat.newLine.beforeOpenBrace.block": "sameLine",
