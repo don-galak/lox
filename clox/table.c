@@ -56,6 +56,20 @@ static Entry* findEntry(Entry* entries, int capacity, ObjString* key) {
     }
 }
 
+/**
+ * Returns true if entry was found. False otherwise.
+ * If the entry exists, it is assigned to the `value` output parameter.
+ */
+bool tableGet(Table* table, ObjString* key, Value* value) {
+    if (table->count == 0) return false;
+
+    Entry* entry = findEntry(table->entries, table->capacity, key);
+    if (entry->key == NULL) return false;
+
+    *value = entry->value;
+    return true;
+}
+
 static void adjustCapacity(Table* table, int capacity) {
     Entry* entries = ALLOCATE(Entry, capacity);
     for (int i = 0; i < capacity; i++) {
