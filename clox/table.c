@@ -27,13 +27,17 @@ void freeTable(Table* table) {
  * 1. First, we use modulo(%) to map the key’s hash code to an index within the array’s bounds.
  *    That gives us a bucket index where, ideally, we’ll be able to find or place the entry.
  *
- * 2. If the key for the Entry at that array index is NULL, then the bucket is empty.
- *    If we’re using findEntry() to look up something in the hash table, this means it isn’t there.
- *    If we’re using it to insert, it means we’ve found a place to add the new entry.
+ * 2. If the key for the Entry at that array index is NULL and its value is NULL as well,
+ *    then that means its an empty entry.
+ *    If a tombstone has been found then we return it. Otherwise we return the entry.
+ *    If its value is not nil, then we have found a tombstone. We note it and keep going.
  *
  * 3. If the key in the bucket is equal to the key we’re looking for, then that key is already present in the table.
  *    If we’re doing a lookup, that’s good—we’ve found the key we seek.
  *    If we’re doing an insert, this means we’ll be replacing the value for that key instead of adding a new entry.
+ *
+ *    If we’re using findEntry() to look up something in the hash table, this means it isn’t there.
+ *    If we’re using it to insert, it means we’ve found a place to add the new entry.
  *
  * 4. Otherwise, the bucket has an entry in it, but with a different key. This is a collision.
  *    In that case, we start probing. That’s what that for loop does. We start at the bucket where the entry would ideally go.
@@ -46,9 +50,20 @@ void freeTable(Table* table) {
  */
 static Entry* findEntry(Entry* entries, int capacity, ObjString* key) {
     uint32_t index = key->hash % capacity;
+    Entry* tombstone = NULL;
+
     for (;;) {
         Entry* entry = &entries[index];
-        if (entry->key == key || entry->key == NULL) {
+        if (entry->key == NULL) {
+            if (IS_NIL(entry->value)) {
+                // Empty entry.
+                return tombstone != NULL ? tombstone : entry;
+            } else {
+                // We found a tombstone.
+                if (tombstone == NULL) tombstone = entry;
+            }
+        } else if (entry->key == key) {
+            // We found the key.
             return entry;
         }
 
@@ -116,6 +131,23 @@ bool tableSet(Table* table, ObjString* key, Value value) {
     entry->key = key;
     entry->value = value;
     return isNewKey;
+}
+
+/**
+ * Placing an empty value in the entry that is to be deleted, is called a tombstone.
+ * This is done in order to not break the probe sequence and leave trailing entries orphaned and unreachable.
+ */
+bool tableDelete(Table* table, ObjString* key) {
+    if (table->count == 0) return false;
+
+    // Find the entry.
+    Entry* entry = findEntry(table->entries, table->capacity, key);
+    if (entry->key == NULL) return false;
+
+    // Place a tombstone in the entry.
+    entry->key = NULL;
+    entry->value = BOOL_VAL(true);
+    return true;
 }
 
 /**
