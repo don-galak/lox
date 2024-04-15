@@ -56,6 +56,39 @@ static Entry* findEntry(Entry* entries, int capacity, ObjString* key) {
     }
 }
 
+static void adjustCapacity(Table* table, int capacity) {
+    Entry* entries = ALLOCATE(Entry, capacity);
+    for (int i = 0; i < capacity; i++) {
+        entries[i].key = NULL;
+        entries[i].value = NIL_VAL;
+    }
+
+    /**
+     * In order to choose the bucket for each entry, we take its hash key modulo(%) the array size.
+     * That means that when the array size changes, entries may end up in different buckets.
+     * Those new buckets may have new collisions that we need to deal with.
+     * So the simplest way to get every entry where it belongs is to rebuild the table from scratch by re-inserting every entry into the new empty array.
+     *
+     * We walk through the old array front to back. Any time we find a non-empty bucket, we insert that entry into the new array.
+     * We use findEntry(), passing in the new array instead of the one currently stored in the Table.
+     * (This is why findEntry() takes a pointer directly to an Entry array and not the whole Table struct.
+     * That way, we can pass the new array and capacity before we’ve stored those in the struct.)
+     */
+    for (int i = 0; i < table->capacity; i++) {
+        Entry* entry = &table->entries[i];
+        if (entry->key == NULL) continue;
+
+        Entry* dest = findEntry(entries, capacity, entry->key);
+        dest->key = entry->key;
+        dest->value = entry->value;
+    }
+
+    // After the loop is finished, we can release the memory for the old array.
+    FREE_ARRAY(Entry, table->entries, table->capacity);
+    table->entries = entries;
+    table->capacity = capacity;
+}
+
 bool tableSet(Table* table, ObjString* key, Value value) {
     if (table->count + 1 > table->capacity * TABLE_MAX_LOAD) {
         int capacity = GROW_CAPACITY(table->capacity);
@@ -69,4 +102,17 @@ bool tableSet(Table* table, ObjString* key, Value value) {
     entry->key = key;
     entry->value = value;
     return isNewKey;
+}
+
+/**
+ * Copies entries from one table to the other.
+ * Is used to support method inheritance.
+ */
+void tableAddAll(Table* from, Table* to) {
+    for (int i = 0; i < from->capacity; i++) {
+        Entry* entry = &from->entries[i];
+        if (entry->key != NULL) {
+            tableSet(to, entry->key, entry->value);
+        }
+    }
 }
