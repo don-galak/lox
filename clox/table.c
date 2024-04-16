@@ -103,6 +103,7 @@ static void adjustCapacity(Table* table, int capacity) {
      * (This is why findEntry() takes a pointer directly to an Entry array and not the whole Table struct.
      * That way, we can pass the new array and capacity before we’ve stored those in the struct.)
      */
+    table->count = 0;
     for (int i = 0; i < table->capacity; i++) {
         Entry* entry = &table->entries[i];
         if (entry->key == NULL) continue;
@@ -110,6 +111,7 @@ static void adjustCapacity(Table* table, int capacity) {
         Entry* dest = findEntry(entries, capacity, entry->key);
         dest->key = entry->key;
         dest->value = entry->value;
+        table->count++;
     }
 
     // After the loop is finished, we can release the memory for the old array.
@@ -126,7 +128,7 @@ bool tableSet(Table* table, ObjString* key, Value value) {
 
     Entry* entry = findEntry(table->entries, table->capacity, key);
     bool isNewKey = entry->key == NULL;
-    if (isNewKey) table->count++;
+    if (isNewKey && IS_NIL(entry->value)) table->count++;
 
     entry->key = key;
     entry->value = value;
