@@ -198,3 +198,5 @@ Now the compiler will throw an error because of that trailing `;` after the macr
 Using a do while loop in the macro looks funny, but it provides a way to contain multiple statements inside a block that also permits a semicolon at the end.
 
 See more in: [stackoverflow](https://stackoverflow.com/questions/1067226/c-multi-line-macro-do-while0-vs-scope-block)
+
+#### Placeholder for inline functions
