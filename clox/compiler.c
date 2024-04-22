@@ -144,6 +144,8 @@ static void endCompiler() {
  * easier to read. (Don't know why the author choose this way.)
  */
 static void expression();
+static void statement();
+static void declaration();
 /**
  * getRule is declared here so that it can be accessed by binary(). But its definition
  * is below the rules table. Otherwise it wouldn't have access to it.
@@ -283,6 +285,16 @@ static void expression() {
     parsePrecedence(PREC_ASSIGNMENT);
 }
 
+static void declaration() {
+    statement();
+}
+
+static void statement() {
+    if (match(TOKEN_PRINT)) {
+        printStatement();
+    }
+}
+
 /**
  * The call to advance() "primes the pump" on the scanner.
  * Then a single expression is parsed.
@@ -297,8 +309,11 @@ bool compile(const char* source, Chunk* chunk) {
     parser.panicMode = false;
 
     advance();
-    expression();
-    consume(TOKEN_EOF, "Expect end of expression");
+
+    while (!match(TOKEN_EOF)) {
+        declaration();
+    }
+
     endCompiler();
     return !parser.hadError;
 }
