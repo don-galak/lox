@@ -134,6 +134,7 @@ static InterpretResult run() {
                     runtimeError("Undefined variable '%s'.", name->chars);
                     return INTERPRET_RUNTIME_ERROR;
                 }
+                break;
             }
             case OP_EQUAL: {
                 Value b = pop();
