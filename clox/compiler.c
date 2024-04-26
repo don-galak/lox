@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "common.h"
 #include "compiler.h"
@@ -43,6 +44,7 @@ typedef struct {
     int depth;
 } Local;
 
+// clox allows up to 256 local variable declarations.
 typedef struct {
     Local locals[UINT8_COUNT];
     int localCount;
@@ -171,6 +173,11 @@ static void beginScope() {
 
 static void endScope() {
     current->scopeDepth--;
+
+    while (current->localCount > 0 && current->locals[current->localCount - 1].depth > current->scopeDepth) {
+        emitByte(OP_POP);
+        current->localCount--;
+    }
 }
 
 /**
@@ -193,12 +200,61 @@ static uint8_t identifierConstant(Token* name) {
     return makeConstant(OBJ_VAL(copyString(name->start, name->length)));
 }
 
+static bool identifiersEqual(Token* a, Token* b) {
+    if (a->length != b->length) return false;
+    return memcmp(a->start, b->start, a->length) == 0;
+}
+
+static void addLocal(Token name) {
+    Local* local = &current->locals[current->localCount++];
+    local->name = name;
+    local->depth = current->scopeDepth;
+}
+
+static void declareVariable() {
+    // Early return if variable is global.
+    if (current->scopeDepth == 0) return;
+
+    Token* name = &parser.previous;
+
+    /**
+     * Local variables are appended to the array when they’re declared, which means
+     * the current scope is always at the end of the array. When we declare a new
+     * variable, we start at the end and work backward, looking for an existing
+     * variable with the same name. If we find one in the current scope, we report the
+     * error. Otherwise, if we reach the beginning of the array or a variable owned by
+     * another scope, then we know we’ve checked all of the existing variables in the scope.
+     */
+    for (int i = current->localCount - 1; i >= 0; i--) {
+        Local* local = &current->locals[i];
+        if (local->depth != -1 && local->depth < current->scopeDepth) {
+            break;
+        }
+
+        if (identifiersEqual(name, &local->name)) {
+            error("Already a variable with this name in this scope.");
+        }
+    }
+
+    addLocal(*name);
+}
+
 static uint8_t parseVariable(const char* errorMessage) {
     consume(TOKEN_IDENTIFIER, errorMessage);
+
+    declareVariable();
+    // Early return if variable is local.
+    if (current->scopeDepth > 0) return 0;
+
     return identifierConstant(&parser.previous);
 }
 
 static void defineVariable(uint8_t global) {
+    // Early return if variable is local. This also means that local variables are not created at runtime.
+    if (current->scopeDepth > 0) {
+        return;
+    }
+
     emitBytes(OP_DEFINE_GLOBAL, global);
 }
 
