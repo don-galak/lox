@@ -199,4 +199,16 @@ Using a do while loop in the macro looks funny, but it provides a way to contain
 
 See more in: [stackoverflow](https://stackoverflow.com/questions/1067226/c-multi-line-macro-do-while0-vs-scope-block)
 
+#### Difference between variable declaration and definition
+
+As soon as a variable declaration beings its name is declared in the current scope. The variable exists, but
+in a special "uninitialized" state.
+
+In the compiler "declaring" is when the variable is added to the scope, and "defining" is when it becomes available for use.
+
+Different languages handle defining and declaring, in different ways. Some use more apparent syntax and provide
+control to the user (eg. `c`). Others like `javascript` abstract that from the user, and do it behind the scenes.
+However it's useful to know how that mechanism works, as it might prove crucial in making a good impression in
+a tech interview :P.
+
 #### Placeholder for inline functions
