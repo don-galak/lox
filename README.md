@@ -129,6 +129,13 @@ In `C` you can safely cast ObjString* to Obj*. This is because `C` specifies tha
 
 The first bytes of ObjString exactly line up with Obj. `C` mandates this and makes it so that you can take a pointer to a struct and safely convert it to a pointer to its first field and back.
 
+---
+
+Logical operators `and` and `or` aren't just another pair of binary operators like `+` and `-`. Because they
+short circuit and may not evaluate their right operand depending on the value of the left one, the work more like
+control flow expressions.
+They are basically a little variation on an `if` statement with an `else` clause.
+
 __Spec: 6.7.2.1 13__
 
 __Within a structure object, the non-bit field members and the units in which bit-fields reside have addresses that increase in the order in which they are declared. A pointer to a structure object, suitably converted, points to its initial member(or if that member is a bit-field, then to the unit in which it resides), and vice versa. There may be unnamed padding within a structure object, but not at its beginning.__
