@@ -218,4 +218,64 @@ control to the user (eg. `c`). Others like `javascript` abstract that from the u
 However it's useful to know how that mechanism works, as it might prove crucial in making a good impression in
 a tech interview :P.
 
+#### Jumping Back and Forth (23) Problem
+
+After implementing everything in this chapter (even copying the code as it is from the repo), loops are infinite
+in a special case. When trying to run a `while` or `for` loop `n` times by incrementing a number, it looks like
+the number is never incremented.
+
+The following code will cause infinite loop:
+
+```
+for (var a = 0; a < 5; a = a + 1) {
+    print a;
+}
+```
+
+as well as:
+
+```
+var a = 0;
+while (a < 5) {
+    print a;
+    a = a  + 1;
+}
+```
+
+But the following will never execute:
+
+```
+var a = false;
+while (a == true) {
+    print "in loop";
+}
+```
+
+In the incrementing cases, `a` will successfully increment to `5`, but the loop will never stop.
+It seems as if the `a < 5` defaults to `false`.
+
+The following cases work as expected:
+
+```
+var a = 0;
+if (a == 0) print "is zero";
+```
+__output__: is zero
+
+```
+var a = 0;
+if (a < 0) print "is less than zero";
+```
+__output__: is less than zero
+
+```
+var a = 1;
+if (a > 0) print "is greater than zero";
+```
+__output__: is greater than zero
+
+So it looks like the check is not successful in the loop condition(?)
+Maybe it's a scoping issue? Maybe it will be resolved in a future chapter?
+Not sure yet.
+
 #### Placeholder for inline functions
