@@ -541,7 +541,7 @@ static void forStatement() {
 
         // Jump out of the loop if the condition is false.
         exitJump = emitJump(OP_JUMP_IF_FALSE);
-        emitJump(OP_POP); // Condition.
+        emitByte(OP_POP); // Condition.
     }
 
     if (!match(TOKEN_RIGHT_PAREN)) {
@@ -558,6 +558,7 @@ static void forStatement() {
 
     statement();
     emitLoop(loopStart);
+    //> exit-jump
 
     if (exitJump != -1) {
         patchJump(exitJump);
@@ -595,7 +596,7 @@ static void whileStatement() {
     int loopStart = currentChunk()->count;
     consume(TOKEN_LEFT_PAREN, "Expect '(' after 'while'.");
     expression();
-    consume(TOKEN_RIGHT_PAREN, "Expect '(' after condition.");
+    consume(TOKEN_RIGHT_PAREN, "Expect ')' after condition.");
 
     int exitJump = emitJump(OP_JUMP_IF_FALSE);
     emitByte(OP_POP);
