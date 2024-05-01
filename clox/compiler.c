@@ -44,8 +44,21 @@ typedef struct {
     int depth;
 } Local;
 
-// clox allows up to 256 local variable declarations.
+/**
+ * FunctionType lets the compiler tell when it's compiling top level code versus the body of a function.
+ * Most of the compiler doesn't care about this (this is why it's a useful abstraction) but in one or two places.
+ * TODO placeholder explain
+ */
+typedef enum {
+    TYPE_FUNCTION,
+    TYPE_SCRIPT,
+} FunctionType;
+
 typedef struct {
+    ObjFunction* function;
+    FunctionType type;
+
+    // clox allows up to 256 local variable declarations.
     Local locals[UINT8_COUNT];
     int localCount;
     int scopeDepth;
@@ -53,10 +66,9 @@ typedef struct {
 
 Parser parser;
 Compiler* current = NULL;
-Chunk* compilingChunk;
 
 static Chunk* currentChunk() {
-    return compilingChunk;
+    return &current->function->chunk;
 }
 
 static void errorAt(Token* token, const char* message) {
