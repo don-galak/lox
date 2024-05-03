@@ -278,4 +278,11 @@ So it looks like the check is not successful in the loop condition(?)
 Maybe it's a scoping issue? Maybe it will be resolved in a future chapter?
 Not sure yet.
 
+#### Deeply nested function declarations
+
+`Clox` uses the native stack for compile structs, which means that the compiler has a practical limit on how deeply nested function
+declarations can be. Too many nestings could cause the `C` stack to overflow. If we need the compiler to be more robust against
+pathological or even malicious code (a real concern for tools like Javascript VMs), it would be good to have our
+compiler artificially limit the amount of function nesting it permits.
+
 #### Placeholder for inline functions
