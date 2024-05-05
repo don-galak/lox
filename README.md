@@ -285,4 +285,19 @@ declarations can be. Too many nestings could cause the `C` stack to overflow. If
 pathological or even malicious code (a real concern for tools like Javascript VMs), it would be good to have our
 compiler artificially limit the amount of function nesting it permits.
 
-#### Placeholder for inline functions
+#### Inline functions
+
+_Copied blatantly from [ibm](https://www.ibm.com/support/pages/what-does-it-mean-inline-function-and-how-does-it-affect-program)_
+
+
+An inline function is one for which the compiler copies the code from the function definition directly into the code of the calling function rather than creating a separate set of instructions in memory. This eliminates call-linkage overhead and can expose significant optimization opportunities. Using the "inline" specifier is only a suggestion to the compiler that an inline expansion can be performed; the compiler is free to ignore the suggestion.
+
+Some of the effects of inlining are:
+
+1. In most cases, inlining increase program size. But in some cases, when the function size is smaller than the function call code size, inlining could reduce program size.
+
+2. In most cases, inlining could improve execution time by avoiding the call overhead, and possible see-through by the optimizer (making it a non-opaque function) for more optimizing opportunities. However, if the function is not called frequently, it will not have visible runtime improvement.
+
+3. Inlining increases practical coupling by making the caller potentially rely on the inlined code's internal implementation details. The problem with practical coupling is that when the inlined callee changes, you have to recompile the caller. This is a cost to build and development time.
+
+The best approach would be to hold off inlining until you finish profiling your program. This will help determine if you get any added benefits from inlining.

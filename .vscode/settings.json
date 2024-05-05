@@ -14,7 +14,8 @@
     "system_error": "c",
     "tuple": "c",
     "object.h": "c",
-    "chunk.h": "c"
+    "chunk.h": "c",
+    "ios": "c"
   },
   "C_Cpp.formatting": "vcFormat",
   "C_Cpp.vcFormat.newLine.beforeOpenBrace.block": "sameLine",
