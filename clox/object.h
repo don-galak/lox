@@ -24,6 +24,7 @@ typedef enum {
     OBJ_FUNCTION,
     OBJ_NATIVE,
     OBJ_STRING,
+    OBJ_UPVALUE
 } ObjType;
 
 // next prop is used by freeObjects for memory clean up (a first attempt at a garbage collector)
@@ -54,6 +55,11 @@ struct ObjString {
     uint32_t hash;
 };
 
+typedef struct ObjUpValue {
+    Obj obj;
+    Value* location;
+} ObjUpValue;
+
 typedef struct {
     Obj obj;
     ObjFunction* function;
@@ -64,6 +70,7 @@ ObjFunction* newFunction();
 ObjNative* newNative(NativeFn function);
 ObjString* takeString(char* chars, int length);
 ObjString* copyString(const char* chars, int length);
+ObjUpValue* newUpValue(Value* slot);
 void printObject(Value value);
 
 /**
