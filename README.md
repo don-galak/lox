@@ -301,3 +301,36 @@ Some of the effects of inlining are:
 3. Inlining increases practical coupling by making the caller potentially rely on the inlined code's internal implementation details. The problem with practical coupling is that when the inlined callee changes, you have to recompile the caller. This is a cost to build and development time.
 
 The best approach would be to hold off inlining until you finish profiling your program. This will help determine if you get any added benefits from inlining.
+
+### Note about closures
+
+```
+function initState(init) {
+    let state = init;
+
+    function set(value) {
+        state = value;
+    }
+
+    const get = () => state;
+
+    return [get, set];
+}
+
+const [get, set] = initState('initial');
+
+console.log(get()); // initial
+
+set('second')
+console.log(get()); // second
+
+set('third')
+console.log(get()); // third
+
+set('fourth')
+console.log(get()); // fourth
+```
+
+In languages where closures are used, they capture over the reference to a variable. This is why the above code makes sense.
+This means that a reference to a variable is kept as long as the functions that enclose it are still "alive". This could
+cause performance issues in extreme cases, where functions don't go out of scope (at least in javascript).
