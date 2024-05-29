@@ -55,15 +55,16 @@ struct ObjString {
     uint32_t hash;
 };
 
-typedef struct ObjUpValue {
+typedef struct ObjUpvalue {
     Obj obj;
     Value* location;
-} ObjUpValue;
+    struct ObjUpvalue* next;
+} ObjUpvalue;
 
 typedef struct {
     Obj obj;
     ObjFunction* function;
-    ObjUpValue** upvalues;
+    ObjUpvalue** upvalues;
     int upvalueCount;
 } ObjClosure;
 
@@ -72,7 +73,7 @@ ObjFunction* newFunction();
 ObjNative* newNative(NativeFn function);
 ObjString* takeString(char* chars, int length);
 ObjString* copyString(const char* chars, int length);
-ObjUpValue* newUpValue(Value* slot);
+ObjUpvalue* newUpValue(Value* slot);
 void printObject(Value value);
 
 /**

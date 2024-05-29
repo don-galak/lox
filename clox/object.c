@@ -20,7 +20,7 @@ static Obj* allocateObject(size_t size, ObjType type) {
 }
 
 ObjClosure* newClosure(ObjFunction* function) {
-    ObjUpValue** upvalues = ALLOCATE(ObjUpValue*,
+    ObjUpvalue** upvalues = ALLOCATE(ObjUpvalue*,
                                      function->upvalueCount);
     for (int i = 0; i < function->upvalueCount; i++) {
         upvalues[i] = NULL;
@@ -94,9 +94,10 @@ ObjString* copyString(const char* chars, int length) {
     return allocateString(heapChars, length, hash);
 }
 
-ObjUpValue* newUpValue(Value* slot) {
-    ObjUpValue* upvalue = ALLOCATE_OBJ(ObjUpValue, OBJ_UPVALUE);
+ObjUpvalue* newUpValue(Value* slot) {
+    ObjUpvalue* upvalue = ALLOCATE_OBJ(ObjUpvalue, OBJ_UPVALUE);
     upvalue->location = slot;
+    upvalue->next = NULL;
     return upvalue;
 }
 
