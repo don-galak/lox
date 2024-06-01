@@ -30,6 +30,7 @@ typedef enum {
 // next prop is used by freeObjects for memory clean up (a first attempt at a garbage collector)
 struct Obj {
     ObjType type;
+    bool isMarked;
     struct Obj* next;
 };
 
