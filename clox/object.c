@@ -55,22 +55,26 @@ ObjNative* newNative(NativeFn function) {
 }
 
 static ObjString* allocateString(char* chars, int length, uint32_t hash) {
-    ObjString* string = ALLOCATE_OBJ(ObjString, OBJ_STRING);
-    string->length = length;
-    string->chars = chars;
-    string->hash = hash;
-    tableSet(&vm.strings, string, NIL_VAL);
-    return string;
+  ObjString* string = ALLOCATE_OBJ(ObjString, OBJ_STRING);
+  string->length = length;
+  string->chars = chars;
+  string->hash = hash;
+
+  push(OBJ_VAL(string));
+  tableSet(&vm.strings, string, NIL_VAL);
+  pop();
+
+  return string;
 }
 
 // FNV-1a hashing algorithm
 static uint32_t hashString(const char* key, int length) {
-    uint32_t hash = 2166136261u;
-    for (int i = 0; i < length; i++) {
-        hash ^= (uint8_t)key[i];
-        hash *= 16777619;
-    }
-    return hash;
+  uint32_t hash = 2166136261u;
+  for (int i = 0; i < length; i++) {
+      hash ^= (uint8_t)key[i];
+      hash *= 16777619;
+  }
+  return hash;
 }
 
 ObjString* takeString(char* chars, int length) {
