@@ -50,6 +50,11 @@ static void blackenObject(Obj* object) {
   printf("\n");
 #endif
   switch (object->type) {
+    case OBJ_CLASS: {
+      ObjClass* klass = (ObjClass*)object;
+      markObject((Obj*)klass->name);
+      break;
+    }
     case OBJ_CLOSURE: {
       ObjClosure* closure = (ObjClosure*)object;
       markObject((Obj*)closure->function);
@@ -102,33 +107,37 @@ static void freeObject(Obj* object) {
 #endif
 
     switch (object->type) {
-        case OBJ_CLOSURE: {
-            ObjClosure* closure = (ObjClosure*)object;
-            FREE_ARRAY(ObjUpvalue*, closure->upvalues,
-                       closure->upvalueCount);
-            FREE(ObjClosure, object);
-            break;
-        }
-        case OBJ_FUNCTION: {
-            ObjFunction* function = (ObjFunction*)object;
-            freeChunk(&function->chunk);
-            FREE(ObjFunction, object);
-            break;
-        }
-        case OBJ_NATIVE: {
-            FREE(ObjNative, object);
-            break;
-        }
-        case OBJ_STRING: {
-            ObjString* string = (ObjString*)object;
-            FREE_ARRAY(char, string->chars, string->length + 1);
-            FREE(ObjString, object);
-            break;
-        }
-        case OBJ_UPVALUE:
-            FREE(ObjUpvalue, object);
-            break;
-    }
+      case OBJ_CLASS: {
+        FREE(ObjClass, object);
+        break;
+      }
+      case OBJ_CLOSURE: {
+        ObjClosure* closure = (ObjClosure*)object;
+        FREE_ARRAY(ObjUpvalue*, closure->upvalues,
+                     closure->upvalueCount);
+        FREE(ObjClosure, object);
+        break;
+      }
+      case OBJ_FUNCTION: {
+        ObjFunction* function = (ObjFunction*)object;
+        freeChunk(&function->chunk);
+        FREE(ObjFunction, object);
+        break;
+      }
+      case OBJ_NATIVE: {
+        FREE(ObjNative, object);
+        break;
+      }
+      case OBJ_STRING: {
+        ObjString* string = (ObjString*)object;
+        FREE_ARRAY(char, string->chars, string->length + 1);
+        FREE(ObjString, object);
+        break;
+      }
+      case OBJ_UPVALUE:
+        FREE(ObjUpvalue, object);
+        break;
+  }
 }
 
 static void markRoots() {
