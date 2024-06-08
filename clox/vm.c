@@ -108,23 +108,28 @@ static bool call(ObjClosure* closure, int argCount) {
 }
 
 static bool callValue(Value callee, int argCount) {
-    if (IS_OBJ(callee)) {
-        switch (OBJ_TYPE(callee)) {
-            case OBJ_CLOSURE:
-                return call(AS_CLOSURE(callee), argCount);
-            case OBJ_NATIVE: {
-                NativeFn native = AS_NATIVE(callee);
-                Value result = native(argCount, vm.stackTop - argCount);
-                vm.stackTop -= argCount + 1;
-                push(result);
-                return true;
-            }
-            default:
-                break; // Non-callable object type.
-        }
+  if (IS_OBJ(callee)) {
+    switch (OBJ_TYPE(callee)) {
+      case OBJ_CLASS: {
+        ObjClass* klass = AS_CLASS(callee);
+        vm.stackTop[-argCount - 1] = OBJ_VAL(newInstance(klass));
+        return true;
+      }
+      case OBJ_CLOSURE:
+        return call(AS_CLOSURE(callee), argCount);
+      case OBJ_NATIVE: {
+        NativeFn native = AS_NATIVE(callee);
+        Value result = native(argCount, vm.stackTop - argCount);
+        vm.stackTop -= argCount + 1;
+        push(result);
+        return true;
+      }
+      default:
+        break; // Non-callable object type.
     }
-    runtimeError("Can only call functions and classes.");
-    return false;
+  }
+  runtimeError("Can only call functions and classes.");
+  return false;
 }
 
 static ObjUpvalue* captureUpvalue(Value* local) {
