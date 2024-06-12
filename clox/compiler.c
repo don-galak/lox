@@ -58,6 +58,7 @@ typedef struct {
  */
 typedef enum {
     TYPE_FUNCTION,
+    TYPE_METHOD,
     TYPE_SCRIPT,
 } FunctionType;
 
@@ -211,22 +212,27 @@ static void patchJump(int offset) {
 }
 
 static void initCompiler(Compiler* compiler, FunctionType type) {
-    compiler->enclosing = current;
-    compiler->function = NULL;
-    compiler->type = type;
-    compiler->localCount = 0;
-    compiler->scopeDepth = 0;
-    compiler->function = newFunction();
-    current = compiler;
-    if (type != TYPE_SCRIPT) {
-        current->function->name = copyString(parser.previous.start, parser.previous.length);
-    }
+  compiler->enclosing = current;
+  compiler->function = NULL;
+  compiler->type = type;
+  compiler->localCount = 0;
+  compiler->scopeDepth = 0;
+  compiler->function = newFunction();
+  current = compiler;
+  if (type != TYPE_SCRIPT) {
+    current->function->name = copyString(parser.previous.start, parser.previous.length);
+  }
 
-    Local* local = &current->locals[current->localCount++];
-    local->depth = 0;
-    local->isCaptured = false;
+  Local* local = &current->locals[current->localCount++];
+  local->depth = 0;
+  local->isCaptured = false;
+  if (type != TYPE_FUNCTION) {
+    local->name.start = "this";
+    local->name.length = 4;
+  } else {
     local->name.start = "";
     local->name.length = 0;
+  }
 }
 
 static ObjFunction* endCompiler() {
@@ -579,7 +585,7 @@ ParseRule rules[] = {
   [TOKEN_PRINT]         = {NULL,     NULL,   PREC_NONE},
   [TOKEN_RETURN]        = {NULL,     NULL,   PREC_NONE},
   [TOKEN_SUPER]         = {NULL,     NULL,   PREC_NONE},
-  [TOKEN_THIS]          = {NULL,     NULL,   PREC_NONE},
+  [TOKEN_THIS]          = {this_,    NULL,   PREC_NONE},
   [TOKEN_TRUE]          = {literal,  NULL,   PREC_NONE},
   [TOKEN_VAR]           = {NULL,     NULL,   PREC_NONE},
   [TOKEN_WHILE]         = {NULL,     NULL,   PREC_NONE},
@@ -662,7 +668,8 @@ static void function(FunctionType type) {
 static void method() {
   consume(TOKEN_IDENTIFIER, "Expect method name.");
   uint8_t constant = identifierConstant(&parser.previous);
-  FunctionType type = TYPE_FUNCTION;
+
+  FunctionType type = TYPE_METHOD;
   function(type);
   emitBytes(OP_METHOD, constant);
 }
