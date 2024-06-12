@@ -83,38 +83,38 @@ Compiler* current = NULL;
 ClassCompiler* currentClass = NULL;
 
 static Chunk* currentChunk() {
-    return &current->function->chunk;
+  return &current->function->chunk;
 }
 
 static void errorAt(Token* token, const char* message) {
-    if (parser.panicMode) return;
-    parser.panicMode = true;
-    fprintf(stderr, "[line %d] Error", token->line);
+  if (parser.panicMode) return;
+  parser.panicMode = true;
+  fprintf(stderr, "[line %d] Error", token->line);
 
-    if (token->type == TOKEN_EOF) {
-        fprintf(stderr, " at end");
-    } else if (token->type == TOKEN_ERROR) {
-        // Nothing.
-    } else {
-        /**
-         * '%.*s' is a format specifier for a string.
-         * The '.*' indicates that the width of the string will be determined dynamically
-         * by the argument that follows it. In this case, 'token.length' determines the width of the string.
-         * 'token.start' is the pointer to the start of the string.
-         */
-        fprintf(stderr, " at '%.*s'", token->length, token->start);
-    }
+  if (token->type == TOKEN_EOF) {
+      fprintf(stderr, " at end");
+  } else if (token->type == TOKEN_ERROR) {
+      // Nothing.
+  } else {
+      /**
+       * '%.*s' is a format specifier for a string.
+       * The '.*' indicates that the width of the string will be determined dynamically
+       * by the argument that follows it. In this case, 'token.length' determines the width of the string.
+       * 'token.start' is the pointer to the start of the string.
+       */
+      fprintf(stderr, " at '%.*s'", token->length, token->start);
+  }
 
-    fprintf(stderr, ": %s\n", message);
-    parser.hadError = true;
+  fprintf(stderr, ": %s\n", message);
+  parser.hadError = true;
 }
 
 static void error(const char* message) {
-    errorAt(&parser.previous, message);
+  errorAt(&parser.previous, message);
 }
 
 static void errorAtCurrent(const char* message) {
-    errorAt(&parser.current, message);
+  errorAt(&parser.current, message);
 }
 
 /**
@@ -122,53 +122,52 @@ static void errorAtCurrent(const char* message) {
  * Otherwise if keeps scanning tokens in order to report all the errors.
  */
 static void advance() {
-    parser.previous = parser.current;
+  parser.previous = parser.current;
 
-    for (;;) {
-        parser.current = scanToken();
-        if (parser.current.type != TOKEN_ERROR)
-            break;
-
-        errorAtCurrent(parser.current.start);
-    }
+  for (;;) {
+      parser.current = scanToken();
+      if (parser.current.type != TOKEN_ERROR)
+          break;
+      errorAtCurrent(parser.current.start);
+  }
 }
 
 static void consume(TokenType type, const char* message) {
-    if (parser.current.type == type) {
-        advance();
-        return;
-    }
+  if (parser.current.type == type) {
+      advance();
+      return;
+  }
 
-    errorAtCurrent(message);
+  errorAtCurrent(message);
 }
 
 static bool check(TokenType type) {
-    return parser.current.type == type;
+  return parser.current.type == type;
 }
 
 static bool match(TokenType type) {
-    if (!check(type)) return false;
-    advance();
-    return true;
+  if (!check(type)) return false;
+  advance();
+  return true;
 }
 
 static void emitByte(uint8_t byte) {
-    writeChunk(currentChunk(), byte, parser.previous.line);
+  writeChunk(currentChunk(), byte, parser.previous.line);
 }
 
 static void emitBytes(uint8_t byte1, uint8_t byte2) {
-    emitByte(byte1);
-    emitByte(byte2);
+  emitByte(byte1);
+  emitByte(byte2);
 }
 
 static void emitLoop(int loopStart) {
-    emitByte(OP_LOOP);
+  emitByte(OP_LOOP);
 
-    int offset = currentChunk()->count - loopStart + 2;
-    if (offset > UINT16_MAX) error("Loop body too large.");
+  int offset = currentChunk()->count - loopStart + 2;
+  if (offset > UINT16_MAX) error("Loop body too large.");
 
-    emitByte((offset >> 8) & 0xff);
-    emitByte(offset & 0xff);
+  emitByte((offset >> 8) & 0xff);
+  emitByte(offset & 0xff);
 }
 
 /**
@@ -179,41 +178,41 @@ static void emitLoop(int loopStart) {
  * Returns the offset of the emitted instruction in the chunk.
  */
 static int emitJump(uint8_t instruction) {
-    emitByte(instruction);
-    emitByte(0xff);
-    emitByte(0xff);
-    return currentChunk()->count - 2;
+  emitByte(instruction);
+  emitByte(0xff);
+  emitByte(0xff);
+  return currentChunk()->count - 2;
 }
 
 static void emitReturn() {
-    emitByte(OP_NIL);
-    emitByte(OP_RETURN);
+  emitByte(OP_NIL);
+  emitByte(OP_RETURN);
 }
 
 static uint8_t makeConstant(Value value) {
-    int constant = addConstant(currentChunk(), value);
-    if (constant > UINT8_MAX) {
-        error("Too many constants in one chunk.");
-        return 0;
-    }
+  int constant = addConstant(currentChunk(), value);
+  if (constant > UINT8_MAX) {
+      error("Too many constants in one chunk.");
+      return 0;
+  }
 
-    return (uint8_t)constant;
+  return (uint8_t)constant;
 }
 
 static void emitConstant(Value value) {
-    emitBytes(OP_CONSTANT, makeConstant(value));
+  emitBytes(OP_CONSTANT, makeConstant(value));
 }
 
 static void patchJump(int offset) {
-    // -2 to adjust for the bytecode for the jump offset itself.
-    int jump = currentChunk()->count - offset - 2;
+  // -2 to adjust for the bytecode for the jump offset itself.
+  int jump = currentChunk()->count - offset - 2;
 
-    if (jump > UINT16_MAX) {
-        error("Too much code to jump over.");
-    }
+  if (jump > UINT16_MAX) {
+      error("Too much code to jump over.");
+  }
 
-    currentChunk()->code[offset] = (jump >> 8) & 0xff;
-    currentChunk()->code[offset + 1] = jump & 0xff;
+  currentChunk()->code[offset] = (jump >> 8) & 0xff;
+  currentChunk()->code[offset + 1] = jump & 0xff;
 }
 
 static void initCompiler(Compiler* compiler, FunctionType type) {
@@ -241,36 +240,36 @@ static void initCompiler(Compiler* compiler, FunctionType type) {
 }
 
 static ObjFunction* endCompiler() {
-    emitReturn();
-    ObjFunction* function = current->function;
+  emitReturn();
+  ObjFunction* function = current->function;
 
 #ifdef DEBUG_PRINT_CODE
-    if (!parser.hadError) {
-        disassembleChunk(currentChunk(), function->name != NULL ? function->name->chars : "<script>");
-    }
+  if (!parser.hadError) {
+      disassembleChunk(currentChunk(), function->name != NULL ? function->name->chars : "<script>");
+  }
 #endif
 
-    current = current->enclosing;
-    return function;
+  current = current->enclosing;
+  return function;
 }
 
 static void beginScope() {
-    current->scopeDepth++;
+  current->scopeDepth++;
 }
 
 static void endScope() {
-    current->scopeDepth--;
+  current->scopeDepth--;
 
-    while (current->localCount > 0 &&
-           current->locals[current->localCount - 1].depth >
-              current->scopeDepth) {
-        if (current->locals[current->localCount - 1].isCaptured) {
-            emitByte(OP_CLOSE_UPVALUE);
-        } else {
-            emitByte(OP_POP);
-        }
-        current->localCount--;
+  while (current->localCount > 0 &&
+         current->locals[current->localCount - 1].depth >
+            current->scopeDepth) {
+    if (current->locals[current->localCount - 1].isCaptured) {
+      emitByte(OP_CLOSE_UPVALUE);
+    } else {
+      emitByte(OP_POP);
     }
+    current->localCount--;
+  }
 }
 
 /**
@@ -290,26 +289,26 @@ static ParseRule* getRule(TokenType type);
 static void parsePrecedence(Precedence precedence);
 
 static uint8_t identifierConstant(Token* name) {
-    return makeConstant(OBJ_VAL(copyString(name->start, name->length)));
+  return makeConstant(OBJ_VAL(copyString(name->start, name->length)));
 }
 
 static bool identifiersEqual(Token* a, Token* b) {
-    if (a->length != b->length) return false;
-    return memcmp(a->start, b->start, a->length) == 0;
+  if (a->length != b->length) return false;
+  return memcmp(a->start, b->start, a->length) == 0;
 }
 
 static int resolveLocal(Compiler* compiler, Token* name) {
-    for (int i = compiler->localCount - 1; i >= 0; i--) {
-        Local* local = &compiler->locals[i];
-        if (identifiersEqual(name, &local->name)) {
-            if (local->depth == -1) {
-                error("Can't read local variable in its own initializer.");
-            }
-            return i;
-        }
-    }
+  for (int i = compiler->localCount - 1; i >= 0; i--) {
+      Local* local = &compiler->locals[i];
+      if (identifiersEqual(name, &local->name)) {
+          if (local->depth == -1) {
+              error("Can't read local variable in its own initializer.");
+          }
+          return i;
+      }
+  }
 
-    return -1;
+  return -1;
 }
 
 static int addUpvalue(Compiler* compiler, uint8_t index, bool isLocal) {
