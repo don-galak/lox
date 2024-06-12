@@ -820,17 +820,21 @@ static void printStatement() {
 }
 
 static void returnStatement() {
-    if (current->type == TYPE_SCRIPT) {
-        error("Can't return from top-level code.");
+  if (current->type == TYPE_SCRIPT) {
+    error("Can't return from top-level code.");
+  }
+
+  if (match(TOKEN_SEMICOLON)) {
+    emitReturn();
+  } else {
+    if (current->type == TYPE_INITIALIZER) {
+      error("Can't return a value from an initializer.");
     }
 
-    if (match(TOKEN_SEMICOLON)) {
-        emitReturn();
-    } else {
-        expression();
-        consume(TOKEN_SEMICOLON, "Expect ';' after return value.");
-        emitByte(OP_RETURN);
-    }
+    expression();
+    consume(TOKEN_SEMICOLON, "Expect ';' after return value.");
+    emitByte(OP_RETURN);
+  }
 }
 
 static void whileStatement() {
